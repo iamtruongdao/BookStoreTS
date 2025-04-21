@@ -13,6 +13,10 @@ import Checkout from '@/pages/Checkout'
 import Profile from '@/pages/Profile'
 import Account from '@/pages/Profile/Account'
 import ResetPassword from '@/pages/Profile/ResetPassword'
+import News from '@/pages/News'
+import PostDetail from '@/pages/PostDetail'
+import OrderHistory from '@/pages/Order'
+import OrderDetailPage from '@/pages/OrderDetail'
 
 const router = createBrowserRouter([
   {
@@ -37,7 +41,6 @@ const router = createBrowserRouter([
             const { id } = match.params
             const arr: BreadType[] = [{ name: 'Tác giả', pathname: '/author' }]
             if (paramName) {
-              console.log(paramName)
               arr.push({ name: paramName[id], pathname: `/author/${id}` })
               return arr
             }
@@ -103,7 +106,46 @@ const router = createBrowserRouter([
         ]
       },
       { path: 'category/:category', element: <BookList /> },
-      { path: 'search', element: <BookList /> }
+      { path: 'search', element: <BookList /> },
+      {
+        path: ':tag',
+        element: <News />,
+        handle: {
+          breadcrumb: (match, paramName) => {
+            const { tag } = match.params
+            const arr: BreadType[] = []
+            if (paramName) {
+              arr.push({ name: paramName[tag], pathname: `/news/${tag}` })
+              return arr
+            }
+            arr.push({ name: tag, pathname: `/news/${tag}` })
+            return arr
+          }
+        } as RouteType
+      },
+      {
+        path: ':tag/:slug',
+        element: <PostDetail />,
+        handle: {
+          breadcrumb: (match, paramName) => {
+            const { tag, slug } = match.params
+            const arr: BreadType[] = []
+            if (paramName) {
+              arr.push(
+                { name: paramName[tag], pathname: `/${tag}` },
+                { name: paramName[slug], pathname: `/${tag}/${slug}` }
+              )
+              return arr
+            }
+            arr.push({ name: tag, pathname: `/${tag}` })
+            arr.push({ name: slug, pathname: `/${tag}/${slug}` })
+            return arr
+          }
+        } as RouteType
+      },
+
+      { path: 'order', element: <OrderHistory /> },
+      { path: 'order/:orderId', element: <OrderDetailPage /> }
     ]
   },
   { path: '/login', element: <LoginPage /> },

@@ -65,7 +65,7 @@ const Profile: React.FC = () => {
             <span>Những Thiết Lập Riêng Tư</span>
           </Link>
 
-          <Link to='/orders' className='flex items-center space-x-3 py-2 text-gray-600 hover:bg-gray-50 rounded px-2'>
+          <Link to='/order' className='flex items-center space-x-3 py-2 text-gray-600 hover:bg-gray-50 rounded px-2'>
             <ShoppingBag size={18} />
             <span>Đơn Mua</span>
           </Link>

@@ -1,42 +1,28 @@
-import React, { FC } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Book } from '@/types'
+import { Book, Post } from '@/types'
 import NewsItem from '@/components/NewsItem'
-import logo from '@/assets/logo.webp'
-// Book type definition
-const newsItems = [
-  {
-    title: 'Sự kiện: NHỮNG CÂU CHUYỆN NGHỆ THUẬT - Giới thiệu bộ sách pháp',
-    date: 'Thứ Hai, 24/03/2025',
-    image: '/path/to/book-event-image.jpg'
-  },
-  {
-    title: 'Trò chuyện về cuốn sách: Chuyện nhà Tí của nhà văn Phan Thị Vàng Anh',
-    date: 'Thứ Hai, 17/03/2025',
-    image: '/path/to/book-discussion-image.jpg'
-  },
-  {
-    title: 'Sự kiện: Giao lưu với tác giả và dịch giả "Bỗ con gà"',
-    date: 'Thứ Hai, 03/03/2025',
-    image: '/path/to/author-event-image.jpg'
-  },
-  {
-    title: '"Quyền lực" của đất đại',
-    date: 'Chủ Nhật, 02/03/2025',
-    image: '/path/to/power-book-image.jpg'
-  },
-  {
-    title: 'Sự kiện: Ra mắt cuốn sách ĐẤT ĐAI - Ham muốn sở hữu định hình',
-    date: 'Thứ Sáu, 01/02/2025',
-    image: '/path/to/land-book-image.jpg'
-  }
-]
+import { getTagBySlugApi } from '@/apis/tag.api'
+
 type BookDescriptionProps = {
   bookDetails: Book
 }
 const BookDescription: FC<BookDescriptionProps> = ({ bookDetails }) => {
+  const [news, setNews] = useState<Post[]>([])
+
+  const fetchNews = async () => {
+    // setIsLoading(true)
+    const res = await getTagBySlugApi('tin-nha-nam', 5, 1)
+    if (res.code === 0) {
+      // setIsLoading(false)
+      setNews(res.data.posts)
+    }
+  }
+  useEffect(() => {
+    fetchNews()
+  }, [])
   return (
     <div className='min-h-screen  p-4'>
       <div className='container flex justify-between max-w-7xl'>
@@ -114,9 +100,19 @@ const BookDescription: FC<BookDescriptionProps> = ({ bookDetails }) => {
 
               <div className='relative'>
                 <div className='space-y-2'>
-                  {newsItems.map((item, index) => (
-                    <NewsItem border key={index} w='150px' h='120px' title={item.title} date={item.date} image={logo} />
-                  ))}
+                  {news.length > 0 &&
+                    news.map((item, index) => (
+                      <NewsItem
+                        border
+                        key={index}
+                        w='150px'
+                        link={`/tin-nh-nam/${item.slug}`}
+                        h='120px'
+                        title={item.title}
+                        date={item.createdAt!}
+                        image={item.thumbnail}
+                      />
+                    ))}
                 </div>
               </div>
             </CardContent>

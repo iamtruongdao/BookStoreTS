@@ -1,2 +1,6 @@
 @import 'tailwindcss';
 @plugin 'tailwindcss-animate';
+.rte p {
+  padding-block: 4px;
+  font-size: 16px;
+}

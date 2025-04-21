@@ -1,13 +1,14 @@
-import { GetUser } from '@/apis/auth.api'
-import { useEffect } from 'react'
-import { RouterProvider } from 'react-router-dom'
-import { ToastContainer } from 'react-toastify'
 import { useAppDispatch, useAppSelector } from '@/hooks'
 import { setLoading } from '@/redux/slice/appSlice'
-import router from '@/routes'
-import { ColorRing } from 'react-loader-spinner'
 import { getCartAction } from '@/redux/slice/cartSlice'
+import router from '@/routes'
+import { AnimatePresence } from 'framer-motion'
+import { useEffect } from 'react'
+import { ColorRing } from 'react-loader-spinner'
+import { RouterProvider } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
 import { getUserAction } from './redux/slice/userSlice'
+
 function App() {
   const {
     isLogin,
@@ -48,7 +49,10 @@ function App() {
           </div>
         )}
         {/* Nội dung chính */}
-        <RouterProvider router={router} />
+
+        <AnimatePresence mode='wait'>
+          <RouterProvider router={router} />
+        </AnimatePresence>
         <ToastContainer
           position='top-right'
           autoClose={5000}

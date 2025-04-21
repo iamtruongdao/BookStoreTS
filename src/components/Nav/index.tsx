@@ -1,3 +1,4 @@
+import { getAllTagApi } from '@/apis/tag.api'
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -8,17 +9,26 @@ import {
 } from '@/components/ui/navigation-menu'
 import { useAppDispatch, useAppSelector } from '@/hooks'
 import { getCategoryAction } from '@/redux/slice/categorySlice'
-import { useEffect } from 'react'
+import { Tag } from '@/types'
+import { useEffect, useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 
 const Nav = () => {
   const { categories } = useAppSelector((state) => state.category)
+  const [tags, setTags] = useState<Tag[]>([])
   const dispatch = useAppDispatch()
   const fetchCategories = async () => {
     dispatch(getCategoryAction())
   }
+  const fetchTag = async () => {
+    const res = await getAllTagApi()
+    if (res.code === 0) {
+      setTags(res.data)
+    }
+  }
   useEffect(() => {
     fetchCategories()
+    fetchTag()
   }, [])
   return (
     <NavigationMenu className='hidden md:flex' viewport={false}>
@@ -37,21 +47,17 @@ const Nav = () => {
           <NavigationMenuContent className='border-none p-0 top-[57px] '>
             <div className='w-48'>
               <ul className='bg-[#fff]'>
-                <li>
-                  <Link to={'/'} className='block hover:text-green-600 w-full  p-2 border-b border-b-[#ddd]'>
-                    Tin tức mới
-                  </Link>
-                </li>
-                <li>
-                  <Link to={'/'} className='block hover:text-green-600 p-2 border-b border-b-[#ddd]'>
-                    Tin tức mới
-                  </Link>
-                </li>
-                <li>
-                  <Link to={'/'} className='block hover:text-green-600 !p-2 border-b border-b-[#ddd]'>
-                    Tin tức mới
-                  </Link>
-                </li>
+                {tags.length > 0 &&
+                  tags.map((tag) => (
+                    <li>
+                      <Link
+                        to={`/${tag.slug}`}
+                        className='block hover:text-green-600 w-full  p-2 border-b border-b-[#ddd]'
+                      >
+                        {tag.name}
+                      </Link>
+                    </li>
+                  ))}
               </ul>
             </div>
           </NavigationMenuContent>

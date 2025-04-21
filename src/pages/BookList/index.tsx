@@ -9,7 +9,7 @@ import { setLoading } from '@/redux/slice/appSlice'
 import { Book } from '@/types'
 
 import React, { useEffect, useState } from 'react'
-import { Link, NavLink, useLocation, useParams, useSearchParams } from 'react-router-dom'
+import { NavLink, useLocation, useParams, useSearchParams } from 'react-router-dom'
 
 // Define the interfaces
 

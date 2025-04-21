@@ -1,4 +1,4 @@
-import { OrderState, PAYMENT } from '@/utils/constant'
+import { OrderState, PAYMENT, PaymentStatus } from '@/utils/constant'
 
 export interface OrderAddress {
   address: string
@@ -38,7 +38,9 @@ export interface Order {
   orderItem: OrderProduct[]
   orderStatus: OrderState
   orderPayment: PAYMENT
-  orderCode: number
+  paymentStatus?: PaymentStatus
+  orderCode: string
+  trackingNumber?: string
   linkPayment: string
   createdAt: Date
 }

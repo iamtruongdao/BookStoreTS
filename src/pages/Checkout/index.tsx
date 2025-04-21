@@ -226,7 +226,6 @@ export default function CheckoutPage() {
 
   // Handle district change
   const handleDistrictChange = (value: string) => {
-    setFormdata({ address: '', email: '', name: '', phoneNumber: '', notes: '' })
     setDistrictId(value)
     setWardCode('')
   }
