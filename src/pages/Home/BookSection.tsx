@@ -42,7 +42,7 @@ const popularBooks: Book[] = [
     productDescription: 'Cuốn sách tài chính kinh điển',
     authorName: 'George S. Clason',
     author: 'George S. Clason',
-    cat: [],
+    category: [],
     isPublic: true
   },
   {
@@ -57,7 +57,7 @@ const popularBooks: Book[] = [
     productDescription: 'Cuốn sách giúp bạn hiểu về nghệ thuật giao tiếp',
     authorName: 'Dale Carnegie',
     author: 'Dale Carnegie',
-    cat: [],
+    category: [],
     isPublic: true
   },
   {
@@ -72,7 +72,7 @@ const popularBooks: Book[] = [
     productDescription: 'Xây dựng thói quen tốt dễ dàng hơn bao giờ hết',
     authorName: 'James Clear',
     author: 'James Clear',
-    cat: [],
+    category: [],
     isPublic: true
   },
   {
@@ -87,7 +87,7 @@ const popularBooks: Book[] = [
     productDescription: 'Bí quyết tư duy của những người thành công',
     authorName: 'Napoleon Hill',
     author: 'Napoleon Hill',
-    cat: [],
+    category: [],
     isPublic: true
   },
   {
@@ -102,7 +102,7 @@ const popularBooks: Book[] = [
     productDescription: 'Những nguyên tắc thành công trong bán hàng',
     authorName: 'Og Mandino',
     author: 'Og Mandino',
-    cat: [],
+    category: [],
     isPublic: true
   }
 ]

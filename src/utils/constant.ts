@@ -22,3 +22,25 @@ export enum PAYMENT {
   COD = 'COD',
   VNPAY = 'VNPAY'
 }
+export const PAYMENT_MAP: Record<PAYMENT, string> = {
+  [PAYMENT.COD]: 'Thanh toán khi nhận hàng',
+  [PAYMENT.VNPAY]: 'Thanh toán qua VNPAY'
+}
+export const PAYMENT_STATUS_MAP: Record<PaymentStatus, { label: string; color: string }> = {
+  [PaymentStatus.Paid]: {
+    label: 'Đã thanh toán',
+    color: 'text-green-600'
+  },
+  [PaymentStatus.WaitingPaid]: {
+    label: 'Chờ thanh toán',
+    color: 'text-yellow-600'
+  },
+  [PaymentStatus.Refund]: {
+    label: 'Hoàn tiền',
+    color: 'text-blue-600'
+  },
+  [PaymentStatus.Failed]: {
+    label: 'Thanh toán thất bại',
+    color: 'text-red-600'
+  }
+}

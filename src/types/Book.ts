@@ -12,11 +12,12 @@ export interface Book {
   slug: string
   pageNumber: number
   translator?: string
-  publicDate: string
+  publicDate: Date
   avatar: string
   authorName: string
   author: string
-  cat: Category[]
+  cat: string[]
+  category: Category[]
   isPublic?: boolean
   createdAt?: string
 }

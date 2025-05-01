@@ -11,3 +11,12 @@ export const getBookFilterApi = (params: Record<string, string>) => {
     params
   })
 }
+export const createBookApi = (book: Book) => {
+  return axios.post<void, BackendResponse<Book>>(`products`, book)
+}
+export const updateBookApi = (book: Book) => {
+  return axios.put<void, BackendResponse<Book>>(`products`, book)
+}
+export const deleteBookApi = (id: string) => {
+  return axios.delete<void, BackendResponse<Book>>(`products/${id}`)
+}

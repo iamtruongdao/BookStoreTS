@@ -8,7 +8,7 @@ import { ColorRing } from 'react-loader-spinner'
 import { RouterProvider } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import { getUserAction } from './redux/slice/userSlice'
-
+import 'react-datepicker/dist/react-datepicker.css'
 function App() {
   const {
     isLogin,

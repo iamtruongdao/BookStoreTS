@@ -26,7 +26,7 @@ const AuthorDetail = () => {
     author: '',
     authorName: '',
     avatar: '',
-    cat: [],
+    category: [],
     discount: 0,
     isPublic: false,
     productDescription: '',

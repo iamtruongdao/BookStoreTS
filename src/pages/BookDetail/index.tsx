@@ -17,7 +17,7 @@ const BookDetail = () => {
     author: '',
     authorName: '',
     avatar: '',
-    cat: [],
+    category: [],
     discount: 0,
     isPublic: false,
     productDescription: '',
@@ -49,7 +49,7 @@ const BookDetail = () => {
         <Breadscrumb
           breadcrumb={
             _.every(book, (value) => !_.isNil(value) && value !== '') && id
-              ? { slug: book.cat[0].slug, name: book.cat[0].name, [id]: book.productName }
+              ? { slug: book.category[0].slug, name: book.category[0].name, [id]: book.productName }
               : {}
           }
         />

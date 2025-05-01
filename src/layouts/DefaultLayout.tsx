@@ -7,7 +7,6 @@ import { Outlet } from 'react-router-dom'
 const DefaultLayout = () => {
   return (
     <>
-      {' '}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -16,9 +15,7 @@ const DefaultLayout = () => {
       >
         <Header />
         {/* <div className='flex justify-center flex-col items-center overflow-hidden '> */}
-
         <Outlet />
-
         {/* </div> */}
         <Footer />
       </motion.div>

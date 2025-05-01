@@ -17,6 +17,7 @@ import News from '@/pages/News'
 import PostDetail from '@/pages/PostDetail'
 import OrderHistory from '@/pages/Order'
 import OrderDetailPage from '@/pages/OrderDetail'
+import { adminRoutes } from './admin-route'
 
 const router = createBrowserRouter([
   {
@@ -149,6 +150,7 @@ const router = createBrowserRouter([
     ]
   },
   { path: '/login', element: <LoginPage /> },
-  { path: '/register', element: <Register /> }
+  { path: '/register', element: <Register /> },
+  adminRoutes
 ])
 export default router

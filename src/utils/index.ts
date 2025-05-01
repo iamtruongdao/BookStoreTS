@@ -23,7 +23,14 @@ export function formatDateStringToVietnamese(dateString: string) {
   return `${weekday}, ${day}/${month}/${year}`
 }
 
-// Sử dụng với chuỗi ngày ISO
-const isoDateString = '2025-04-17T14:56:38.629Z'
-console.log(formatDateStringToVietnamese(isoDateString))
-// Kết quả: "Thứ Năm, 17/04/2025"
+export const getBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
+  new Promise(function (resolve, reject) {
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = () => resolve(reader.result)
+    reader.onerror = (error) => reject(error)
+  })
+export function capitalizeFirstLetter(str: string): string {
+  if (!str) return ''
+  return str.charAt(0).toUpperCase() + str.slice(1)
+}
