@@ -1,4 +1,4 @@
-import { CreateOrderShip, getShop, printShip } from '@/apis/ghn.api'
+import { CreateOrderShip, getShop } from '@/apis/ghn.api'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
@@ -6,12 +6,12 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Order, Shop } from '@/types'
+import dayjs from 'dayjs'
+import timezone from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
 import { useEffect, useState } from 'react'
 import DatePicker from 'react-datepicker'
 import OrderPickupDialog from './OrderPickupDialog'
-import dayjs from 'dayjs'
-import utc from 'dayjs/plugin/utc'
-import timezone from 'dayjs/plugin/timezone'
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
@@ -50,8 +50,9 @@ export default function PrepareShipmentDialog({ open, onOpenChange, onConfirm, o
       const res = await CreateOrderShip({
         address: order.orderAddress,
         total: order.orderCheckout,
-        orderCode: order.id,
-        time: Math.floor(date.getTime() / 1000)
+        orderCode: order.orderCode,
+        time: Math.floor(date.getTime() / 1000),
+        isPaymentOnline: order.orderPayment === 'COD' ? false : true
       })
       if (res.code === 200) {
         setTrackingNumber(res.data.order_code)

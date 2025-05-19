@@ -11,15 +11,18 @@ import React, { useEffect, useState } from 'react'
 import { Order } from '@/types'
 import { formatMoney } from '@/utils'
 import { OrderState, PAYMENT, PaymentStatus, statusMap } from '@/utils/constant'
-import { getOrderByIdApi } from '@/apis/order.api'
+import { cancelOrderApi, getOrderByIdApi } from '@/apis/order.api'
 import { useParams } from 'react-router-dom'
+import { formatDate } from 'date-fns'
+import { toast } from 'react-toastify'
 
 interface OrderDetailProps {
   order: Order
   isLoading?: boolean
+  onDelete: (order: Order) => void
 }
 
-const OrderDetail: React.FC<OrderDetailProps> = ({ order, isLoading = false }) => {
+const OrderDetail: React.FC<OrderDetailProps> = ({ order, isLoading = false, onDelete }) => {
   // State để theo dõi trạng thái hiển thị mã đơn hàng
   const [showOrderId, setShowOrderId] = useState<boolean>(false)
 
@@ -39,10 +42,10 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ order, isLoading = false }) =
   const [showPayNow, setShowPayNow] = useState<boolean>(false)
 
   // Derived tracking number (would be stored elsewhere in a real application)
-  const [trackingNumber, setTrackingNumber] = useState<string | undefined>(undefined)
+  const [trackingNumber, setTrackingNumber] = useState<string | undefined>('')
 
   // Format date function for display
-  const formatDate = (date: Date): string => {
+  const formatDateFull = (date: Date): string => {
     return new Intl.DateTimeFormat('vi-VN', {
       day: '2-digit',
       month: '2-digit',
@@ -56,7 +59,8 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ order, isLoading = false }) =
   const isOrderConfirmed = order.orderStatus !== OrderState.Pending && order.orderStatus !== OrderState.Cancel
 
   // Kiểm tra xem đơn hàng có thể hiển thị thông tin vận chuyển không
-  const shouldShowShipping = isOrderConfirmed && trackingNumber
+  const shouldShowShipping = isOrderConfirmed && !!trackingNumber
+  console.log(shouldShowShipping)
 
   // Kiểm tra xem có phải phương thức thanh toán online không
   const isOnlinePayment = order.orderPayment !== PAYMENT.COD
@@ -65,7 +69,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ order, isLoading = false }) =
   useEffect(() => {
     // Generate tracking number for orders in shipping state
     if ([OrderState.WaitingPickup, OrderState.Shipping].includes(order.orderStatus)) {
-      setTrackingNumber(`SPXVN${order.orderCode}`)
+      setTrackingNumber(order?.trackingNumber)
     }
 
     // Kiểm tra xem đơn hàng có thể theo dõi không (chỉ khi đã xác nhận và có mã vận đơn)
@@ -288,7 +292,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ order, isLoading = false }) =
       {/* Header */}
       <div className='flex items-center justify-between mb-6'>
         <h1 className='text-2xl font-bold text-orange-500'>Chi tiết đơn hàng</h1>
-        {showOrderId && <span className='text-sm text-gray-500'>#{order.id}</span>}
+        {showOrderId && <span className='text-sm text-gray-500'>#{order.orderCode}</span>}
       </div>
 
       {/* Order Status */}
@@ -299,7 +303,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ order, isLoading = false }) =
               {/* Using statusMap for state display */}
               <Badge className={statusMap[order.orderStatus].color}>{statusMap[order.orderStatus].text}</Badge>
               <span className='text-sm text-gray-500 flex items-center'>
-                <CalendarIcon className='h-4 w-4 mr-1' /> {formatDate(order.createdAt)}
+                <CalendarIcon className='h-4 w-4 mr-1' /> {formatDateFull(order.createdAt)}
               </span>
             </div>
           </div>
@@ -399,7 +403,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ order, isLoading = false }) =
           <CardContent className='bg-yellow-50'>
             <div className='py-2 text-center'>
               <span className='font-bold text-lg text-orange-500'>
-                {order.orderStatus === OrderState.Pending ? '3-5 ngày sau khi xác nhận' : '2-3 ngày từ hôm nay'}
+                Dự kiến giao vào {formatDate(new Date(order.deleveredAt), 'dd/MM/yyyy')}
               </span>
               <p className='text-sm text-gray-600 mt-1'>(Không tính thứ 7, chủ nhật và ngày lễ)</p>
             </div>
@@ -542,7 +546,11 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ order, isLoading = false }) =
         {/* Chỉ hiển thị nút Hủy đơn hàng khi đang ở trạng thái Pending hoặc chưa thanh toán với phương thức thanh toán online */}
         {(order.orderStatus === OrderState.Pending ||
           (isOnlinePayment && order.paymentStatus === PaymentStatus.WaitingPaid)) && (
-          <Button variant='outline' className='border-red-500 text-red-500 hover:bg-red-50'>
+          <Button
+            variant='outline'
+            className='border-red-500 text-red-500 hover:bg-red-50'
+            onClick={() => onDelete(order)}
+          >
             Hủy đơn hàng
           </Button>
         )}
@@ -595,9 +603,20 @@ export default function OrderDetailPage() {
       fetchOrder()
 
       setIsLoading(false)
-    }, 1500) // Giả lập độ trễ 1.5 giây
+    }, 500) // Giả lập độ trễ 1.5 giây
   }, [])
-
+  const handleDelete = async (order: Order) => {
+    try {
+      const res = await cancelOrderApi(order.id)
+      if (res.code === 0) {
+        toast.success('hủy đơn hàng thành công')
+        window.location.reload()
+      }
+      // Load lại danh sách sau khi xóa
+    } catch (error) {
+      console.error('Error deleting book:', error)
+    }
+  }
   // Hiển thị skeleton trong quá trình tải
   if (isLoading || !orderData) {
     return (
@@ -620,5 +639,5 @@ export default function OrderDetailPage() {
       </div>
     )
   }
-  return <OrderDetail order={orderData} isLoading={isLoading} />
+  return <OrderDetail order={orderData} isLoading={isLoading} onDelete={handleDelete} />
 }

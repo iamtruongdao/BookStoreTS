@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label'
 import { Author } from '@/types'
 import { getBase64 } from '@/utils'
 import { debounce } from 'lodash'
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import FroalaEditor from 'react-froala-wysiwyg'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
@@ -15,9 +15,12 @@ const config = {
 }
 export default function AuthorEdit() {
   const location = useLocation()
-
+  const [loaded, setLoaded] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
+  useEffect(() => {
+    setTimeout(() => setLoaded(true), 500)
+  }, [])
   const [author, setAuthor] = useState<Author>(
     location.state || {
       id: '',
@@ -44,6 +47,7 @@ export default function AuthorEdit() {
   }, 300)
 
   const handleSubmit = async () => {
+    if (!author.authorName) return
     try {
       setIsLoading(true)
       const res = location.state ? await updateAuthorApi(author) : await createAuthorApi(author)
@@ -105,12 +109,14 @@ export default function AuthorEdit() {
 
           <div>
             <h2 className='text-sm font-medium text-gray-500 mb-2'>Mô tả</h2>
-            <FroalaEditor
-              tag='textarea'
-              config={config}
-              model={author.authorDescription}
-              onModelChange={(e: string) => setAuthor((prev) => ({ ...prev, authorDescription: e }))}
-            />
+            {loaded && (
+              <FroalaEditor
+                tag='textarea'
+                config={config}
+                model={author.authorDescription}
+                onModelChange={(e: string) => setAuthor((prev) => ({ ...prev, authorDescription: e }))}
+              />
+            )}
           </div>
         </div>
 

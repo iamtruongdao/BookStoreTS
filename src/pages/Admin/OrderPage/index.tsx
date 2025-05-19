@@ -43,15 +43,8 @@ const OrderPage = () => {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [isRefreshing, setIsRefreshing] = useState(false)
 
-  const handleViewDetail = async (author: Author) => {
-    try {
-      // Giả lập dữ liệu chi tiết từ sách
-
-      setSelectedAuthor(author) // Thay vì setSelectedPost
-      setShowDetail(true)
-    } catch (error) {
-      console.error('Error generating book detail:', error)
-    }
+  const handleViewDetail = async (order: Order) => {
+    navigate(`/admin/order/${order.id}`)
   }
   const handleDelete = async (order: Order) => {
     try {
@@ -91,7 +84,7 @@ const OrderPage = () => {
   const handlePrint = async (order: Order) => {
     const res = await printShip(order.trackingNumber!)
     if (res.code === 200) {
-      window.location.href = `https://dev-online-gateway.ghn.vn/a5/public-api/print80x80?token=${res.data.token}`
+      window.open(`https://dev-online-gateway.ghn.vn/a5/public-api/printA5?token=${res.data.token}`, '_blank')
     }
   }
   const table = useReactTable({

@@ -13,7 +13,6 @@ const Profile: React.FC = () => {
             <User size={20} className='text-gray-500' />
           </div>
           <div>
-            <div className='font-medium'>trngoxun514</div>
             <Link to='/profile/edit' className='text-xs text-gray-500 hover:text-gray-700'>
               Sửa Hồ Sơ
             </Link>
@@ -21,13 +20,13 @@ const Profile: React.FC = () => {
         </div>
 
         <nav className='space-y-1'>
-          <Link
+          {/* <Link
             to='/notifications'
             className='flex items-center space-x-3 py-2 text-orange-500 hover:bg-orange-50 rounded px-2'
           >
             <Bell size={18} />
             <span>Thông Báo</span>
-          </Link>
+          </Link> */}
 
           <div className='flex items-center space-x-3 py-2'>
             <User size={18} className='text-gray-600' />
@@ -43,10 +42,10 @@ const Profile: React.FC = () => {
           >
             <span>Hồ Sơ</span>
           </NavLink>
-
+          {/* 
           <NavLink to='/profile/address' className='block pl-8 py-2 text-gray-600 hover:bg-gray-50 rounded px-2'>
             <span>Địa Chỉ</span>
-          </NavLink>
+          </NavLink> */}
 
           <NavLink
             to='/profile/password'
@@ -57,38 +56,17 @@ const Profile: React.FC = () => {
             <span>Đổi Mật Khẩu</span>
           </NavLink>
 
-          <Link to='/profile/notifications' className='block pl-8 py-2 text-gray-600 hover:bg-gray-50 rounded px-2'>
+          {/* <Link to='/profile/notifications' className='block pl-8 py-2 text-gray-600 hover:bg-gray-50 rounded px-2'>
             <span>Cài Đặt Thông Báo</span>
           </Link>
 
           <Link to='/profile/privacy' className='block pl-8 py-2 text-gray-600 hover:bg-gray-50 rounded px-2'>
             <span>Những Thiết Lập Riêng Tư</span>
-          </Link>
+          </Link> */}
 
           <Link to='/order' className='flex items-center space-x-3 py-2 text-gray-600 hover:bg-gray-50 rounded px-2'>
             <ShoppingBag size={18} />
             <span>Đơn Mua</span>
-          </Link>
-
-          <Link to='/vouchers' className='flex items-center space-x-3 py-2 text-gray-600 hover:bg-gray-50 rounded px-2'>
-            <Tag size={18} />
-            <span>Kho Voucher</span>
-          </Link>
-
-          <Link to='/coins' className='flex items-center space-x-3 py-2 text-gray-600 hover:bg-gray-50 rounded px-2'>
-            <Wallet size={18} />
-            <span>Shopee Xu</span>
-          </Link>
-
-          <Link
-            to='/mid-month-sale'
-            className='flex items-center space-x-3 py-2 text-gray-600 hover:bg-gray-50 rounded px-2'
-          >
-            <Tag size={18} />
-            <span className='flex items-center'>
-              15.4 Sale Giữa Tháng
-              <span className='ml-2 bg-red-500 text-white text-xs px-1 rounded'>New</span>
-            </span>
           </Link>
         </nav>
       </div>

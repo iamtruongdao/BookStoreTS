@@ -5,6 +5,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Book, Post } from '@/types'
 import NewsItem from '@/components/NewsItem'
 import { getTagBySlugApi } from '@/apis/tag.api'
+import { formatDate } from '@/utils'
 
 type BookDescriptionProps = {
   bookDetails: Book
@@ -82,7 +83,7 @@ const BookDescription: FC<BookDescriptionProps> = ({ bookDetails }) => {
                   <span className='text-gray-600 flex items-center'>
                     <span className='mr-2'>•</span> Ngày phát hành
                   </span>
-                  <span className='font-medium text-right'>{bookDetails.publicDate}</span>
+                  <span className='font-medium text-right'>{formatDate(bookDetails.publicDate.toString())}</span>
                 </li>
               </ul>
             </CardContent>

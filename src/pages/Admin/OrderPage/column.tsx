@@ -1,12 +1,12 @@
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { Author, Order, OrderItem, OrderProduct } from '@/types'
+import { Order, OrderItem, OrderProduct } from '@/types'
+import { formatMoney } from '@/utils'
 import { OrderState, PAYMENT, PAYMENT_MAP, PAYMENT_STATUS_MAP, statusMap } from '@/utils/constant'
 import { ColumnDef, Row } from '@tanstack/react-table'
 import { BookOpen, ChevronDown, ChevronRight, MoreVertical, PencilLine, Trash2 } from 'lucide-react'
 import React, { useMemo, useState } from 'react'
-import { CancelOrderDialog, DeleteAuthorDialog } from './CancelOrderDialog'
-import { formatMoney } from '@/utils'
+import { CancelOrderDialog } from './CancelOrderDialog'
 
 interface ActionsProps {
   row: Row<Order>
@@ -198,6 +198,7 @@ export const getColumn = ({
           onCreate={onCreate}
           onConfirm={onConfirm}
           row={row}
+          onViewDetail={onViewDetail}
           onDelete={onDelete}
         />
       )

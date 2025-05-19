@@ -24,6 +24,10 @@ export default function BookEdit() {
   const [authors, setAuthors] = useState<Author[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
+  const [loaded, setLoaded] = useState(false)
+  useEffect(() => {
+    setTimeout(() => setLoaded(true), 300)
+  }, [])
   const [book, setBook] = useState<Book>(
     location.state || {
       id: '',
@@ -175,12 +179,14 @@ export default function BookEdit() {
 
           <div>
             <h2 className='text-sm font-medium text-gray-500 mb-2'>Mô tả</h2>
-            <FroalaEditor
-              tag='textarea'
-              config={config}
-              model={book.productDescription}
-              onModelChange={(e: string) => setBook((prev) => ({ ...prev, productDescription: e }))}
-            />
+            {loaded && (
+              <FroalaEditor
+                tag='textarea'
+                config={config}
+                model={book.productDescription}
+                onModelChange={(e: string) => setBook((prev) => ({ ...prev, productDescription: e }))}
+              />
+            )}
           </div>
         </div>
 

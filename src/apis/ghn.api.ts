@@ -33,6 +33,16 @@ export const CreateOrderShip = (data: {
   address: OrderAddress
   orderCode: string
   time: number
+  isPaymentOnline: boolean
 }) => {
   return axios.post<void, CreateOrderRespone>(`ship/create-order`, data)
+}
+export const leadtimeShip = (data: {
+  from_district_id: number
+  from_ward_code: string
+  to_district_id: number
+  to_ward_code: string
+  service_id: number
+}) => {
+  return axios.post<void, BackendResponse<{ leadtime: number }>>(`ship/leadtime`, data)
 }

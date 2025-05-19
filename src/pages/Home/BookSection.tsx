@@ -113,7 +113,7 @@ export function BookSection({ title = 'Sách mới', books = popularBooks, viewM
         <div className='flex items-center justify-between !mb-6'>
           <h2 className='text-2xl font-bold text-green-600'>{title}</h2>
           <Link
-            to={'/author'}
+            to={viewMoreLink}
             className='text-green-700 flex items-center hover:text-green-800 cursor-pointer hover:bg-green-50 p-2'
           >
             Xem thêm

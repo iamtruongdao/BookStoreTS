@@ -9,10 +9,11 @@ import { RouterProvider } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import { getUserAction } from './redux/slice/userSlice'
 import 'react-datepicker/dist/react-datepicker.css'
+import { Role } from './utils/constant'
 function App() {
   const {
     isLogin,
-    userInfo: { id }
+    userInfo: { id, roles }
   } = useAppSelector((state) => state.user)
   const { isGlobalLoading } = useAppSelector((state) => state.app)
   const dispatch = useAppDispatch()
@@ -22,7 +23,9 @@ function App() {
         try {
           dispatch(setLoading(true)) // Bật loading trước khi gọi API
           dispatch(getUserAction()) // Chờ API hoàn thành
+          // if (roles.includes(Role.User)) {
           dispatch(getCartAction(id))
+          // }
         } catch (error) {
           console.log(error)
         } finally {

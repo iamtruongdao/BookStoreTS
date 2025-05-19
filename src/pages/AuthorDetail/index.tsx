@@ -1,10 +1,9 @@
 import { getAuthorByIdApi } from '@/apis/author.api'
-import { getBookByAuthorApi } from '@/apis/book.api'
+import { getBookByAuthorApi, getBookFilterApi } from '@/apis/book.api'
+import BookInfo from '@/components/BookInfo'
 import Breadscrumb from '@/components/Breadscrumb'
-import CarouselCustom from '@/components/Carousel'
 import { useAppDispatch } from '@/hooks'
 import ProfileCard from '@/pages/AuthorDetail/ProfileCard'
-import BookInfo from '@/components/BookInfo'
 import { setLoading } from '@/redux/slice/appSlice'
 import { Author, Book } from '@/types'
 import _ from 'lodash'
@@ -34,6 +33,8 @@ const AuthorDetail = () => {
     productPrice: 0,
     productQuantity: 0
   })
+  const [relatedBooks, setRelatedBooks] = useState<Book[]>([])
+
   const getAuthorById = async () => {
     dispatch(setLoading(true))
     // await new Promise((resolve) => setTimeout(resolve, 2000))
@@ -41,7 +42,6 @@ const AuthorDetail = () => {
     if (res.code === 0) {
       await getBook(res.data.id)
       setAuthor(res.data)
-
       dispatch(setLoading(false))
     }
   }
@@ -50,6 +50,11 @@ const AuthorDetail = () => {
     const res = await getBookByAuthorApi(author)
     if (res.code === 0) {
       setBook(res.data)
+      const response = await getBookFilterApi({ pageSize: '11', pageNumber: '1', cate: res.data.category[0].id })
+      if (response.code === 0) {
+        const filteredBooks = response.data.items.filter((item: Book) => item.slug !== res.data.slug)
+        setRelatedBooks(filteredBooks)
+      }
     }
   }
   useEffect(() => {
@@ -67,7 +72,7 @@ const AuthorDetail = () => {
       </div>
       <ProfileCard author={author} />
       <BookInfo book={book} />
-      <BookSection title='Sách cùng loại' />
+      <BookSection books={relatedBooks} viewMoreLink='/book' title='Sách cùng loại' />
     </>
   )
 }

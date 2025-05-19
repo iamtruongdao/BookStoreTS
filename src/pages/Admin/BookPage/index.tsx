@@ -34,7 +34,7 @@ const BookPage = () => {
   const [totalRows, setTotalRows] = useState(10)
   const [globalFilter, setGlobalFilter] = useState('')
   const [showFilters, setShowFilters] = useState(false)
-  const [showSort, setShowSort] = useState(false)
+  const [showSort, setShowSort] = useState(true)
 
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
   const [selectedBook, setSelectedBook] = useState<Book | null>(null)
@@ -153,15 +153,18 @@ const BookPage = () => {
         onDeleteSelected={handleDeleteSelected}
       />
       <BookDetailSheet book={selectedBook} open={showDetail} onOpenChange={setShowDetail} />
-      {isRefreshing || isLoading ? (
-        <div className='space-y-4'>
-          <Skeleton className='h-10 w-full rounded-md' />
-          <Skeleton className='h-10 w-full rounded-md' />
-          <Skeleton className='h-10 w-full rounded-md' />
-        </div>
-      ) : (
-        <DataTable table={table} className='bg-background' />
-      )}
+      <div className='p-2'>
+        {' '}
+        {isRefreshing || isLoading ? (
+          <div className='space-y-4'>
+            <Skeleton className='h-10 w-full rounded-md' />
+            <Skeleton className='h-10 w-full rounded-md' />
+            <Skeleton className='h-10 w-full rounded-md' />
+          </div>
+        ) : (
+          <DataTable table={table} className='bg-background' />
+        )}
+      </div>
     </div>
   )
 }

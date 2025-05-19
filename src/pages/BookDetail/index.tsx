@@ -1,4 +1,4 @@
-import { getBookApi } from '@/apis/book.api'
+import { getBookApi, getBookFilterApi } from '@/apis/book.api'
 import Breadscrumb from '@/components/Breadscrumb'
 import { useAppDispatch } from '@/hooks'
 import BookInfo from '@/components/BookInfo'
@@ -18,6 +18,7 @@ const BookDetail = () => {
     authorName: '',
     avatar: '',
     category: [],
+    cat: [],
     discount: 0,
     isPublic: false,
     productDescription: '',
@@ -26,17 +27,23 @@ const BookDetail = () => {
     productQuantity: 0,
     slug: '',
     pageNumber: 0,
-    publicDate: '',
+    publicDate: new Date(),
     id: ''
   })
+  const [relatedBooks, setRelatedBooks] = useState<Book[]>([])
 
   const getBook = async () => {
     dispatch(setLoading(true))
     const res = await getBookApi(id)
     await new Promise((resolve) => setTimeout(resolve, 2000))
     if (res.code === 0) {
-      dispatch(setLoading(false))
       setBook(res.data)
+      const response = await getBookFilterApi({ pageSize: '11', pageNumber: '1', cate: res.data.category[0].id })
+      if (response.code === 0) {
+        const filteredBooks = response.data.items.filter((item: Book) => item.slug !== res.data.slug)
+        setRelatedBooks(filteredBooks)
+      }
+      dispatch(setLoading(false))
     }
   }
   useEffect(() => {
@@ -57,7 +64,7 @@ const BookDetail = () => {
 
       <BookInfo book={book} hideDescription />
       <BookDescription bookDetails={book} />
-      <BookSection title='Có thể bạn cũng thích' />
+      <BookSection title='Có thể bạn cũng thích' books={relatedBooks} viewMoreLink='/book' />
     </>
   )
 }

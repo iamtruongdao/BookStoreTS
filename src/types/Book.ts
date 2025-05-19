@@ -20,4 +20,5 @@ export interface Book {
   category: Category[]
   isPublic?: boolean
   createdAt?: string
+  sold?: number
 }

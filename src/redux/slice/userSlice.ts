@@ -2,7 +2,7 @@ import { GetUser, LoginApi, LogoutApi } from '@/apis/auth.api'
 import { UserResponse } from '@/types'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 export const loginAction = createAsyncThunk('user/login', async (data: { email: string; password: string }) => {
-  return (await LoginApi(data)).data
+  return await LoginApi(data)
 })
 export const logoutAction = createAsyncThunk('user/logout', async () => {
   await LogoutApi()
@@ -28,7 +28,7 @@ const userSlide = createSlice({
     })
     builder.addCase(loginAction.fulfilled, (state, action) => {
       state.isLogin = true
-      state.userInfo = action.payload.userAccount
+      state.userInfo = action.payload.data.userAccount
     })
     builder.addCase(loginAction.rejected, (state) => {
       state.isLogin = false

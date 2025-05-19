@@ -21,9 +21,9 @@ const Nav = () => {
     dispatch(getCategoryAction())
   }
   const fetchTag = async () => {
-    const res = await getAllTagApi()
+    const res = await getAllTagApi({ pageSize: '10', pageIndex: '1' })
     if (res.code === 0) {
-      setTags(res.data)
+      setTags(res.data.items)
     }
   }
   useEffect(() => {
@@ -43,7 +43,9 @@ const Nav = () => {
         </NavigationMenuItem>
 
         <NavigationMenuItem>
-          <NavigationMenuTrigger className='text-gray-800 text-base cursor-pointer'>Tin Sách</NavigationMenuTrigger>
+          <NavigationMenuTrigger className='text-gray-800 bg-transparent  text-base cursor-pointer'>
+            Tin Sách
+          </NavigationMenuTrigger>
           <NavigationMenuContent className='border-none p-0 top-[57px] '>
             <div className='w-48'>
               <ul className='bg-[#fff]'>
@@ -64,7 +66,9 @@ const Nav = () => {
         </NavigationMenuItem>
 
         <NavigationMenuItem className='group relative'>
-          <NavigationMenuTrigger className='text-gray-800 cursor-pointer text-base'>Sách Nhã Nam</NavigationMenuTrigger>
+          <NavigationMenuTrigger className='text-gray-800 bg-transparent cursor-pointer text-base'>
+            Sách Nhã Nam
+          </NavigationMenuTrigger>
           <NavigationMenuContent className='left-[-220px] border-none p-0 !top-[40px] w-full'>
             {/* Dropdown Panel */}
             <div className='z-10 bg-white shadow-lg w-full min-w-[980px] '>
@@ -94,7 +98,7 @@ const Nav = () => {
             to={'/cuocthi'}
             className={({ isActive }) => (isActive ? 'text-green-600 border-b-2 border-blue-600' : 'text-gray-700')}
           >
-            <NavigationMenuTrigger className=' text-base cursor-pointer'>Cuộc Thi</NavigationMenuTrigger>
+            <NavigationMenuTrigger className='bg-transparent  text-base cursor-pointer'>Cuộc Thi</NavigationMenuTrigger>
           </NavLink>
           <NavigationMenuContent className='border-none p-0 bg-white !top-[50px] '>
             <div className='p-4 w-48 shadow-lg'>
@@ -124,7 +128,9 @@ const Nav = () => {
         </NavigationMenuItem>
 
         <NavigationMenuItem>
-          <NavigationMenuTrigger className='text-gray-800 text-base cursor-pointer'>Liên hệ</NavigationMenuTrigger>
+          <NavigationMenuTrigger className='bg-transparent  text-gray-800 text-base cursor-pointer'>
+            Liên hệ
+          </NavigationMenuTrigger>
           <NavigationMenuContent className='!top-[50px] p-0 bg-white border-none'>
             <div className='p-4 w-48'>
               <ul className='space-y-2'>

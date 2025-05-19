@@ -44,3 +44,7 @@ export const PAYMENT_STATUS_MAP: Record<PaymentStatus, { label: string; color: s
     color: 'text-red-600'
   }
 }
+export enum Role {
+  User = 'User',
+  Admin = 'Admin'
+}

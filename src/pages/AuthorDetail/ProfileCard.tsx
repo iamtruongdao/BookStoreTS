@@ -1,9 +1,8 @@
 import ProfileSkeleton from '@/components/Skeleton/ProfileSkeleton'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { Card } from '@/components/ui/card'
 import { Author } from '@/types'
-import React, { useState } from 'react'
-import { useParams } from 'react-router-dom'
+import React from 'react'
 type ProfileProp = {
   author: Author
 }

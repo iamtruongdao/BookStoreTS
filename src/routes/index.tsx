@@ -18,6 +18,7 @@ import PostDetail from '@/pages/PostDetail'
 import OrderHistory from '@/pages/Order'
 import OrderDetailPage from '@/pages/OrderDetail'
 import { adminRoutes } from './admin-route'
+import { privateRoute } from './private-route'
 
 const router = createBrowserRouter([
   {
@@ -149,8 +150,7 @@ const router = createBrowserRouter([
       { path: 'order/:orderId', element: <OrderDetailPage /> }
     ]
   },
-  { path: '/login', element: <LoginPage /> },
-  { path: '/register', element: <Register /> },
+  ...privateRoute,
   adminRoutes
 ])
 export default router

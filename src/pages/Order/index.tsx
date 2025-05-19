@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import type { Order } from '@/types'
 import { OrderState, PaymentStatus, statusMap } from '@/utils/constant'
-import { formatMoney } from '@/utils'
+import { formatDate, formatMoney } from '@/utils'
 import { getOrderByUserIdApi } from '@/apis/order.api'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
@@ -157,7 +157,7 @@ const OrderHistory: React.FC = () => {
                             <CardHeader className='bg-white p-5 pb-3'>
                               <div className='flex justify-between items-center'>
                                 <div className='flex items-center'>
-                                  <h2 className='text-gray-800 font-medium'>Mã đơn hàng: {order.id}</h2>
+                                  <h2 className='text-gray-800 font-medium'>Mã đơn hàng: {order.orderCode}</h2>
                                 </div>
                                 <div className='flex items-center gap-2'>
                                   {/* Payment status badge */}
@@ -226,7 +226,7 @@ const OrderHistory: React.FC = () => {
                                   dateTime={order.createdAt.toString().split('/').reverse().join('-')}
                                   className='text-sm'
                                 >
-                                  {order.createdAt.toString()}
+                                  {formatDate(order.createdAt.toString())}
                                 </time>
                               </div>
                               <div className='flex-1 ml-4'>

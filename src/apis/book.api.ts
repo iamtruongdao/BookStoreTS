@@ -20,3 +20,9 @@ export const updateBookApi = (book: Book) => {
 export const deleteBookApi = (id: string) => {
   return axios.delete<void, BackendResponse<Book>>(`products/${id}`)
 }
+export const getWaitPublishBookApi = () => {
+  return axios.get<void, BackendResponse<Paginate<Book>>>(`products/wait-publish`)
+}
+export const getTopBookApi = (params: Record<string, string>) => {
+  return axios.get<void, BackendResponse<Paginate<Book>>>(`products/top-product`, { params })
+}

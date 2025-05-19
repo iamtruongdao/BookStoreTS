@@ -17,7 +17,7 @@ const OrderPickupDialog: React.FC<OrderPickUpProps> = ({ trackingNumber, open, o
     if (trackingNumber) {
       setIsLoading(false)
     }
-  }, [open, isLoading])
+  }, [open, isLoading, trackingNumber])
 
   return (
     <div className='font-sans'>

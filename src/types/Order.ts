@@ -43,9 +43,16 @@ export interface Order {
   trackingNumber?: string
   linkPayment: string
   createdAt: Date
+  deleveredAt: Date
 }
 export interface Checkout {
   cartId: string
   userId: string
   items: { productId: string; discount: number; price: number; quantity: number }[]
+}
+export interface OrderStatisticResponse {
+  year: number
+  month: number
+  totalOrders: number
+  totalRevenue: number
 }

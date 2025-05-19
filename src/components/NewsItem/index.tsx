@@ -24,7 +24,7 @@ const NewsItem: React.FC<NewsItemProp> = (props) => {
           <div style={{ width: w }} className={`shrink-0 h-full  `}>
             <img src={image} alt='Hành trình khám phá' className={`w-full h-full  object-cover`} />
           </div>
-          <div className={`w-[calc(100%-${w})]   p-4 bg-white`}>
+          <div className={`w-full p-4 bg-white`}>
             <h3 className='font-medium mb-2 text-sm line-clamp-2'>{title}</h3>
             <p className='text-gray-500 text-xs'>{formatDateStringToVietnamese(date)}</p>
           </div>

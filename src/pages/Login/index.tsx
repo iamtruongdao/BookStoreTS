@@ -1,4 +1,3 @@
-import { LoginApi } from '@/apis/auth.api'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -10,7 +9,6 @@ import { loginAction } from '@/redux/slice/userSlice'
 import { ArrowRight, Github, LockKeyhole, Mail } from 'lucide-react'
 import React, { ChangeEvent, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { toast } from 'react-toastify'
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({ email: '', password: '' })
@@ -118,7 +116,7 @@ const LoginPage = () => {
                 </div>
               </div>
 
-              <div className='!mt-6'>
+              {/* <div className='!mt-6'>
                 <Button
                   variant='outline'
                   className='w-full border-gray-300 hover:bg-gray-50 flex items-center justify-center gap-2'
@@ -126,13 +124,13 @@ const LoginPage = () => {
                   <Github className='w-4 h-4' />
                   GitHub
                 </Button>
-              </div>
+              </div> */}
             </div>
           </CardContent>
           <CardFooter className='flex justify-center'>
             <p className='text-sm text-gray-600'>
               Don't have an account?
-              <Link to='#' className='font-medium text-blue-600 hover:text-blue-500'>
+              <Link to={'/register'} className='font-medium text-blue-600 hover:text-blue-500'>
                 Sign up
               </Link>
             </p>

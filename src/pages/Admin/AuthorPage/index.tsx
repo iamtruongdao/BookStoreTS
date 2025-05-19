@@ -152,15 +152,17 @@ const AuthorPage = () => {
         onDeleteSelected={handleDeleteSelected}
       />
       <AuthorDetailSheet author={selectedAuthor} open={showDetail} onOpenChange={setShowDetail} />
-      {isRefreshing || isLoading ? (
-        <div className='space-y-4 p-2'>
-          <Skeleton className='h-10 w-full rounded-md' />
-          <Skeleton className='h-10 w-full rounded-md' />
-          <Skeleton className='h-10 w-full rounded-md' />
-        </div>
-      ) : (
-        <DataTable table={table} className='bg-background' />
-      )}
+      <div className='p-2'>
+        {isRefreshing || isLoading ? (
+          <div className='space-y-4 p-2'>
+            <Skeleton className='h-10 w-full rounded-md' />
+            <Skeleton className='h-10 w-full rounded-md' />
+            <Skeleton className='h-10 w-full rounded-md' />
+          </div>
+        ) : (
+          <DataTable table={table} className='bg-background' />
+        )}
+      </div>
     </div>
   )
 }

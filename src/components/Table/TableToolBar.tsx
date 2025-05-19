@@ -1,5 +1,18 @@
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
+import { cn } from '@/lib/utils'
+import { statusMap } from '@/utils/constant'
 import { Table } from '@tanstack/react-table'
+import { debounce } from 'lodash'
 import {
   ArrowDownWideNarrow,
   ArrowUpDown,
@@ -11,20 +24,7 @@ import {
   Trash2,
   X
 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Badge } from '@/components/ui/badge'
-import { debounce } from 'lodash'
 import { ChangeEvent } from 'react'
-import { OrderState, statusMap } from '@/utils/constant'
 
 interface TableToolbarProps<TData> {
   table: Table<TData>
@@ -253,48 +253,50 @@ export function TableToolbar<TData>({
           </DropdownMenu>
         )}
 
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <Button
-              asChild
-              variant='ghost'
-              size='icon'
-              className={cn('relative', table.getState().sorting.length > 0 && 'bg-accent')}
-            >
-              {getSortIcon()}
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align='end' className='w-[200px] bg-white'>
-            {sortableColumns.map((column) => {
-              const { column: sortedColumn, direction } = getSortingInfo()
+        {showSort && (
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <Button
+                asChild
+                variant='ghost'
+                size='icon'
+                className={cn('relative', table.getState().sorting.length > 0 && 'bg-accent')}
+              >
+                {getSortIcon()}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align='end' className='w-[200px] bg-white'>
+              {sortableColumns.map((column) => {
+                const { column: sortedColumn, direction } = getSortingInfo()
 
-              const isCurrentColumn = sortedColumn?.id === column.id
-              return (
-                <DropdownMenuItem
-                  key={column.id}
-                  onClick={() => handleSort(column.id)}
-                  className='flex items-center justify-between '
-                >
-                  <span>{typeof column.columnDef.header === 'string' ? column.columnDef.header : column.id}</span>
-                  {isCurrentColumn &&
-                    (direction === 'asc' ? (
-                      <ArrowDownWideNarrow className='h-4 w-4' />
-                    ) : (
-                      <ArrowUpNarrowWide className='h-4 w-4' />
-                    ))}
-                </DropdownMenuItem>
-              )
-            })}
-            {table.getState().sorting.length > 0 && (
-              <>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => table.setSorting([])} className='text-destructive'>
-                  Xóa sắp xếp
-                </DropdownMenuItem>
-              </>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
+                const isCurrentColumn = sortedColumn?.id === column.id
+                return (
+                  <DropdownMenuItem
+                    key={column.id}
+                    onClick={() => handleSort(column.id)}
+                    className='flex items-center justify-between '
+                  >
+                    <span>{typeof column.columnDef.header === 'string' ? column.columnDef.header : column.id}</span>
+                    {isCurrentColumn &&
+                      (direction === 'asc' ? (
+                        <ArrowDownWideNarrow className='h-4 w-4' />
+                      ) : (
+                        <ArrowUpNarrowWide className='h-4 w-4' />
+                      ))}
+                  </DropdownMenuItem>
+                )
+              })}
+              {table.getState().sorting.length > 0 && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => table.setSorting([])} className='text-destructive'>
+                    Xóa sắp xếp
+                  </DropdownMenuItem>
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
 
         <DropdownMenu>
           <DropdownMenuTrigger>

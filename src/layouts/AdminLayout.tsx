@@ -1,10 +1,19 @@
+import { AppbarUser } from '@/components/Admin/AppbarUser'
 import { AppSidebar } from '@/components/app-sidebar'
 import { Separator } from '@/components/ui/separator'
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
+import { useAppSelector } from '@/hooks'
 import React from 'react'
 import { Outlet } from 'react-router-dom'
-
+const userData = {
+  name: 'Admin User',
+  email: 'admin@fudousan.com',
+  avatar: '/avatars/admin.jpg'
+}
 const AdminLayout = () => {
+  const {
+    userInfo: { fullName, email }
+  } = useAppSelector((state) => state.user)
   return (
     <SidebarProvider>
       <div className='flex min-h-screen w-full'>
@@ -18,7 +27,7 @@ const AdminLayout = () => {
                   <Separator orientation='vertical' className='mr-2 h-4' />
                   {/* <BreadcrumbNav /> */}
                 </div>
-                {/* <AppbarUser user={userData} /> */}
+                <AppbarUser user={{ name: fullName, email: email, avatar: '/avatars/admin.jpg' }} />
               </div>
             </header>
           </div>

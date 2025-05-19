@@ -1,4 +1,4 @@
-import { Book, CreditCard, Landmark, LucideIcon, User } from 'lucide-react'
+import { Book, CreditCard, Landmark, LucideIcon, SquareDashed, User } from 'lucide-react'
 
 export interface NavItem {
   title: string
@@ -14,6 +14,12 @@ export interface NavSubItem {
 }
 
 export const bookNavItems: NavItem[] = [
+  {
+    title: 'Thống kê',
+    url: '/admin',
+    icon: SquareDashed,
+    isActive: true
+  },
   {
     title: 'Quản lý sách',
     url: '/admin/book',
@@ -45,6 +51,32 @@ export const bookNavItems: NavItem[] = [
     url: '/admin/order',
     icon: User,
     isActive: true
+  },
+  {
+    title: 'Quản lý tài khoản',
+    url: '/admin/user',
+    icon: User,
+    isActive: true
+  },
+  {
+    title: 'Quản lý bài đăng',
+    url: '/admin/post',
+    icon: User,
+    isActive: true,
+    items: [
+      { title: 'Danh sách', url: '/admin/post' },
+      { title: 'Edit', url: '/admin/post-edit' }
+    ]
+  },
+  {
+    title: 'Quản lý chủ đề',
+    url: '/admin/tag',
+    icon: User,
+    isActive: true,
+    items: [
+      { title: 'Danh sách', url: '/admin/tag' },
+      { title: 'Edit', url: '/admin/tag-edit' }
+    ]
   }
 ]
 

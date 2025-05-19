@@ -14,7 +14,7 @@ import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
 export default function Cart() {
-  const { cartProducts } = useAppSelector((state) => state.cart)
+  const { cartProducts, cartCountProduct } = useAppSelector((state) => state.cart)
   const {
     userInfo: { id }
   } = useAppSelector((state) => state.user)
@@ -210,20 +210,29 @@ export default function Cart() {
       />
 
       <div className='flex justify-end'>
-        <Button
-          className='bg-green-600 hover:bg-green-700 text-white py-6 px-8 text-lg font-medium rounded-md shadow-md hover:shadow-lg transition-all duration-200'
-          disabled={isCalculating || loadingItemIds.length > 0}
-          onClick={handlePayment}
-        >
-          {isCalculating || loadingItemIds.length > 0 ? (
-            <div className='flex items-center gap-2'>
-              <Loader2 size={20} className='animate-spin' />
-              <span>Đang cập nhật...</span>
-            </div>
-          ) : (
-            'Thanh toán'
-          )}
-        </Button>
+        {cartCountProduct === 0 ? (
+          <Link
+            to={'/'}
+            className='bg-green-600 hover:bg-green-700 text-white p-2 text-lg font-medium rounded-md shadow-md hover:shadow-lg transition-all duration-200'
+          >
+            Tiếp tục mua sắm
+          </Link>
+        ) : (
+          <Button
+            className='bg-green-600 hover:bg-green-700 text-white py-6 px-8 text-lg font-medium rounded-md shadow-md hover:shadow-lg transition-all duration-200'
+            disabled={isCalculating || loadingItemIds.length > 0}
+            onClick={handlePayment}
+          >
+            {isCalculating || loadingItemIds.length > 0 ? (
+              <div className='flex items-center gap-2'>
+                <Loader2 size={20} className='animate-spin' />
+                <span>Đang cập nhật...</span>
+              </div>
+            ) : (
+              'Thanh toán'
+            )}
+          </Button>
+        )}
       </div>
     </div>
   )

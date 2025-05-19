@@ -1,5 +1,5 @@
-import { getDistrict, getFeeShip, getProvince, getWard } from '@/apis/ghn.api'
-import { checkOutApi, createOrderApi } from '@/apis/order.api'
+import { getDistrict, getFeeShip, getProvince, getWard, leadtimeShip } from '@/apis/ghn.api'
+import { checkOutApi, createOrderApi, createPaymentApi } from '@/apis/order.api'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -10,6 +10,7 @@ import { useAppSelector } from '@/hooks'
 import { CartProduct, District, OrderCheckout, OrderProduct, Province, Ward } from '@/types'
 import { formatMoney } from '@/utils'
 import { PAYMENT } from '@/utils/constant'
+import { formatDate } from 'date-fns'
 import { debounce } from 'lodash'
 import { ChevronLeft, CreditCard } from 'lucide-react'
 import { ChangeEvent, useEffect, useMemo, useState } from 'react'
@@ -36,6 +37,7 @@ export default function CheckoutPage() {
     phoneNumber: '',
     notes: ''
   })
+  const [deleveryDate, setDeleveryDate] = useState<string | null>(null)
   const [orderCheckout, setOrderCheckout] = useState<OrderCheckout>({
     totalPrice: 0,
     totalApplyDiscount: 0,
@@ -74,21 +76,6 @@ export default function CheckoutPage() {
     return map
   }, [provinces])
 
-  const districtNameMap = useMemo(() => {
-    const map: Record<string, string> = {}
-    districts.forEach((d) => {
-      map[d.DistrictID.toString()] = d.DistrictName
-    })
-    return map
-  }, [districts])
-
-  const wardNameMap = useMemo(() => {
-    const map: Record<string, string> = {}
-    wards.forEach((w) => {
-      map[w.WardCode] = w.WardName
-    })
-    return map
-  }, [wards])
   const handleChange = debounce((e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormdata((prev) => ({
@@ -247,6 +234,16 @@ export default function CheckoutPage() {
     if (res.code === 200) {
       setShippingFee(res.data.total)
     }
+    const response = await leadtimeShip({
+      service_id: 53320,
+      from_district_id: 3255,
+      from_ward_code: '1B2808',
+      to_district_id: +districtId,
+      to_ward_code: value
+    })
+    if (response.code === 200) {
+      setDeleveryDate(formatDate(new Date(response.data.leadtime * 1000), 'dd/MM'))
+    }
   }
   // Handle payment method change
   const handlePaymentMethodChange = (value: PaymentMethod) => {
@@ -263,10 +260,33 @@ export default function CheckoutPage() {
     }
     // Implement order placement logic
     if (paymentMethod === 'vnpay') {
-      // Redirect to VNPay payment page
-      console.log('Redirecting to VNPay...')
-      // In a real implementation, this would redirect to the VNPay payment gateway
-      alert('Redirecting to VNPay payment gateway...')
+      const res = await createOrderApi({
+        address: {
+          address: formData.address,
+          phoneNumber: formData.phoneNumber,
+          fullName: formData.name,
+          street: wardCode,
+          district: districtId,
+          city: provinceNameMap[provinceId]
+        },
+        orderPayment: PAYMENT.VNPAY,
+        feeShip: shippingFee,
+        checkout: { cartId: id, userId: userId, items: buildData(cartProducts) }
+      })
+      if (res.code === 0) {
+        const response = await createPaymentApi({
+          amount: orderCheckout.totalApplyDiscount + shippingFee,
+          orderId: res.data.id,
+          description: 'Thanh toan don hang',
+          createdDate: new Date().toISOString()
+        })
+        if (response.code === 0) {
+          console.log(response.data)
+          window.location.href = response.data.url
+        }
+      } else {
+        toast.error('Đặt hàng thất bại!')
+      }
     } else {
       // Handle COD order
       const res = await createOrderApi({
@@ -274,8 +294,8 @@ export default function CheckoutPage() {
           address: formData.address,
           phoneNumber: formData.phoneNumber,
           fullName: formData.name,
-          street: wardNameMap[wardCode],
-          district: districtNameMap[districtId],
+          street: wardCode,
+          district: districtId,
           city: provinceNameMap[provinceId]
         },
         orderPayment: PAYMENT.COD,
@@ -285,11 +305,9 @@ export default function CheckoutPage() {
       if (res.code === 0) {
         toast.success('Đặt hàng thành công!')
         setTimeout(() => {
-          window.location.href = '/order'
+          window.location.href = `order/${res.data.id}`
         }, 1000)
       }
-      console.log('Processing COD order...')
-      alert('Order placed successfully with COD payment!')
     }
   }
 
@@ -432,14 +450,25 @@ export default function CheckoutPage() {
 
         {/* Shipping and Payment - Center Section */}
         <div className='w-full lg:w-1/3 p-4'>
-          {/* <div className='mb-8'>
+          <div className='mb-8'>
             <h2 className='text-xl font-semibold mb-4'>Vận chuyển</h2>
-            <Card className='mb-6'>
-              <CardContent className='px-4'>
-                <p className='text-center text-gray-500'>Vui lòng nhập thông tin giao hàng</p>
+            <Card className='mb-6 shadow-md rounded-2xl border border-gray-200'>
+              <CardContent className='px-6 py-4 bg-white'>
+                {deleveryDate ? (
+                  <div className='text-center space-y-1'>
+                    <p className='text-sm text-gray-600 font-medium'>
+                      Đơn vị vận chuyển: <span className='text-gray-800'>Giao hàng nhanh</span>
+                    </p>
+                    <p className='text-sm text-gray-600'>
+                      Dự kiến giao: <span className='text-green-600 font-semibold'>{deleveryDate}</span>
+                    </p>
+                  </div>
+                ) : (
+                  <p className='text-center text-sm text-gray-500'>Vui lòng nhập thông tin giao hàng</p>
+                )}
               </CardContent>
             </Card>
-          </div> */}
+          </div>
 
           <div>
             <h2 className='text-xl font-semibold mb-4'>Thanh toán</h2>
