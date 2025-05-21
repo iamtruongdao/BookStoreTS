@@ -77,6 +77,16 @@ export const bookNavItems: NavItem[] = [
       { title: 'Danh sách', url: '/admin/tag' },
       { title: 'Edit', url: '/admin/tag-edit' }
     ]
+  },
+  {
+    title: 'Quản lý voucher',
+    url: '/admin/voucher',
+    icon: User,
+    isActive: true,
+    items: [
+      { title: 'Danh sách', url: '/admin/voucher' },
+      { title: 'Edit', url: '/admin/voucher-edit' }
+    ]
   }
 ]
 

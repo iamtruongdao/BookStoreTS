@@ -120,10 +120,10 @@ const Nav = () => {
 
         <NavigationMenuItem>
           <NavLink
-            to={'/venhanam'}
+            to={'/discount'}
             className={({ isActive }) => (isActive ? 'text-green-600 border-b-2 border-blue-600' : 'text-gray-700')}
           >
-            <NavigationMenuLink className='text-gray-800  text-base'>Về Nhã Nam</NavigationMenuLink>
+            <NavigationMenuLink className='text-gray-800  text-base'>Giảm Giá</NavigationMenuLink>
           </NavLink>
         </NavigationMenuItem>
 

@@ -5,11 +5,7 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/s
 import { useAppSelector } from '@/hooks'
 import React from 'react'
 import { Outlet } from 'react-router-dom'
-const userData = {
-  name: 'Admin User',
-  email: 'admin@fudousan.com',
-  avatar: '/avatars/admin.jpg'
-}
+
 const AdminLayout = () => {
   const {
     userInfo: { fullName, email }

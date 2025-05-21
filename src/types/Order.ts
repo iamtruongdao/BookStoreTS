@@ -28,6 +28,7 @@ export interface OrderCheckout {
   totalPrice: number
   totalApplyDiscount: number
   feeShip: number
+  voucherDiscount: number
 }
 
 export interface Order {
@@ -45,10 +46,17 @@ export interface Order {
   createdAt: Date
   deleveredAt: Date
 }
+export interface ItemCheckout {
+  productId: string
+  discount: number
+  price: number
+  quantity: number
+}
 export interface Checkout {
   cartId: string
   userId: string
-  items: { productId: string; discount: number; price: number; quantity: number }[]
+  vouchers: string[]
+  items: ItemCheckout[]
 }
 export interface OrderStatisticResponse {
   year: number

@@ -87,7 +87,7 @@ export default function Cart() {
   const removeItem = async (itemId: string) => {
     // Trong ứng dụng thực tế, đây sẽ gọi API để xóa sản phẩm khỏi giỏ hàng
     setIsLoading(true)
-    await new Promise((resolve) => setTimeout(resolve, 3000)) // Giả lập thời gian chờ 1 giây
+    // Giả lập thời gian chờ 1 giây
     const res = await deleteCartApi({ productId: itemId, userId: id })
     if (res.code === 0) {
       setIsLoading(false)

@@ -513,11 +513,17 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ order, isLoading = false, onD
                 <span>{formatMoney(order.orderCheckout.feeShip)}</span>
               </div>
             )}
-            {(showDetailFees || order.orderCheckout.totalPrice - order.orderCheckout.totalApplyDiscount > 0) && (
-              <div className='flex justify-between py-2'>
-                <span className='text-gray-600'>Giảm giá:</span>
-                <span>-{formatMoney(order.orderCheckout.totalPrice - order.orderCheckout.totalApplyDiscount)}</span>
-              </div>
+            {showDetailFees && (
+              <>
+                <div className='flex justify-between py-2'>
+                  <span className='text-gray-600'>Giảm giá từ sản phẩm:</span>
+                  <span>-{formatMoney(order.orderItem.reduce((acc, item) => acc + item.item.discount, 0))}</span>
+                </div>
+                <div className='flex justify-between py-2'>
+                  <span className='text-gray-600'>Giảm giá từ voucher:</span>
+                  <span>-{formatMoney(order.orderCheckout.voucherDiscount)}</span>
+                </div>
+              </>
             )}
             {!showDetailFees &&
               (order.orderCheckout.feeShip > 0 ||

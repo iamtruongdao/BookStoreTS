@@ -1,3 +1,4 @@
+import { getDiscountAmount } from '@/apis/discount.api'
 import { getDistrict, getFeeShip, getProvince, getWard, leadtimeShip } from '@/apis/ghn.api'
 import { checkOutApi, createOrderApi, createPaymentApi } from '@/apis/order.api'
 import { Button } from '@/components/ui/button'
@@ -41,8 +42,10 @@ export default function CheckoutPage() {
   const [orderCheckout, setOrderCheckout] = useState<OrderCheckout>({
     totalPrice: 0,
     totalApplyDiscount: 0,
-    feeShip: 0
+    feeShip: 0,
+    voucherDiscount: 0
   })
+
   const [orderItems, setOrderItems] = useState<OrderProduct[]>([])
   const [provinceId, setProvinceId] = useState('')
   const [districtId, setDistrictId] = useState('')
@@ -62,7 +65,7 @@ export default function CheckoutPage() {
     return data.map((item) => {
       return {
         productId: item.productId,
-        price: item.productDetails.productPrice,
+        price: item.productDetails.productPrice - item.productDetails.discount,
         discount: item.productDetails.discount,
         quantity: item.quantity
       }
@@ -128,10 +131,22 @@ export default function CheckoutPage() {
 
   const fetchCartData = async () => {
     const data = buildData(cartProducts)
-    const res = await checkOutApi({ cartId: id, userId: userId, items: data })
+    const res = await checkOutApi({ cartId: id, userId: userId, items: data, vouchers: [] })
     if (res.code === 0) {
       setOrderCheckout(res.data.checkout)
       setOrderItems(res.data.items)
+    }
+  }
+  const handleGetVoucher = async () => {
+    const res = await getDiscountAmount({
+      codeId: discountCode,
+      userId: userId,
+      items: buildData(cartProducts)
+    })
+    if (res.code === 0) {
+      console.log(res.data)
+
+      setOrderCheckout((prev) => ({ ...prev, voucherDiscount: res.data.amount }))
     }
   }
   useEffect(() => {
@@ -271,11 +286,16 @@ export default function CheckoutPage() {
         },
         orderPayment: PAYMENT.VNPAY,
         feeShip: shippingFee,
-        checkout: { cartId: id, userId: userId, items: buildData(cartProducts) }
+        checkout: {
+          vouchers: discountCode ? [discountCode] : [],
+          cartId: id,
+          userId: userId,
+          items: buildData(cartProducts)
+        }
       })
       if (res.code === 0) {
         const response = await createPaymentApi({
-          amount: orderCheckout.totalApplyDiscount + shippingFee,
+          amount: orderCheckout.totalApplyDiscount + shippingFee - orderCheckout.voucherDiscount,
           orderId: res.data.id,
           description: 'Thanh toan don hang',
           createdDate: new Date().toISOString()
@@ -300,7 +320,12 @@ export default function CheckoutPage() {
         },
         orderPayment: PAYMENT.COD,
         feeShip: shippingFee,
-        checkout: { cartId: id, userId: userId, items: buildData(cartProducts) }
+        checkout: {
+          vouchers: discountCode ? [discountCode] : [],
+          cartId: id,
+          userId: userId,
+          items: buildData(cartProducts)
+        }
       })
       if (res.code === 0) {
         toast.success('Đặt hàng thành công!')
@@ -545,7 +570,9 @@ export default function CheckoutPage() {
                     onChange={(e) => setDiscountCode(e.target.value)}
                     className='flex-grow focus-visible:ring-transparent'
                   />
-                  <Button className='ml-2 bg-blue-500 cursor-pointer hover:bg-blue-600'>Áp dụng</Button>
+                  <Button onClick={handleGetVoucher} className='ml-2 bg-blue-500 cursor-pointer hover:bg-blue-600'>
+                    Áp dụng
+                  </Button>
                 </div>
 
                 <div className='border-t border-t-gray-300 pt-4 space-y-2'>
@@ -557,9 +584,15 @@ export default function CheckoutPage() {
                     <span className='text-gray-600'>Phí vận chuyển</span>
                     <span>{shippingFee > 0 ? formatMoney(shippingFee) : '-'}</span>
                   </div>
+                  <div className='flex justify-between py-2'>
+                    <span className='text-gray-600'>Voucher</span>
+                    <span>{orderCheckout.voucherDiscount > 0 ? formatMoney(orderCheckout.voucherDiscount) : '-'}</span>
+                  </div>
                   <div className='flex justify-between py-2 font-semibold text-lg border-t border-t-gray-300 mt-2 pt-3'>
                     <span>Tổng cộng</span>
-                    <span className='text-blue-600'>{formatMoney(orderCheckout.totalApplyDiscount + shippingFee)}</span>
+                    <span className='text-blue-600'>
+                      {formatMoney(orderCheckout.totalApplyDiscount + shippingFee - orderCheckout.voucherDiscount)}
+                    </span>
                   </div>
 
                   <div className='flex items-center justify-between mt-6'>

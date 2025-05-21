@@ -35,7 +35,7 @@ const BookDetail = () => {
   const getBook = async () => {
     dispatch(setLoading(true))
     const res = await getBookApi(id)
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    // await new Promise((resolve) => setTimeout(resolve, 2000))
     if (res.code === 0) {
       setBook(res.data)
       const response = await getBookFilterApi({ pageSize: '11', pageNumber: '1', cate: res.data.category[0].id })

@@ -1,22 +1,21 @@
 import DefaultLayout from '@/layouts/DefaultLayout'
-import Home from '@/pages/Home'
-import LoginPage from '@/pages/Login'
-import { createBrowserRouter } from 'react-router-dom'
 import AuthorList from '@/pages/Author/AuthorList'
-import Register from '@/pages/Register'
-import { BreadType, RouteType } from '@/types'
 import AuthorDetail from '@/pages/AuthorDetail'
 import BookDetail from '@/pages/BookDetail'
 import BookList from '@/pages/BookList'
 import Cart from '@/pages/Cart'
 import Checkout from '@/pages/Checkout'
+import DiscountPage from '@/pages/Discount'
+import Home from '@/pages/Home'
+import News from '@/pages/News'
+import OrderHistory from '@/pages/Order'
+import OrderDetailPage from '@/pages/OrderDetail'
+import PostDetail from '@/pages/PostDetail'
 import Profile from '@/pages/Profile'
 import Account from '@/pages/Profile/Account'
 import ResetPassword from '@/pages/Profile/ResetPassword'
-import News from '@/pages/News'
-import PostDetail from '@/pages/PostDetail'
-import OrderHistory from '@/pages/Order'
-import OrderDetailPage from '@/pages/OrderDetail'
+import { BreadType, RouteType } from '@/types'
+import { createBrowserRouter } from 'react-router-dom'
 import { adminRoutes } from './admin-route'
 import { privateRoute } from './private-route'
 
@@ -147,7 +146,8 @@ const router = createBrowserRouter([
       },
 
       { path: 'order', element: <OrderHistory /> },
-      { path: 'order/:orderId', element: <OrderDetailPage /> }
+      { path: 'order/:orderId', element: <OrderDetailPage /> },
+      { path: 'discount', element: <DiscountPage /> }
     ]
   },
   ...privateRoute,
