@@ -1,5 +1,5 @@
-import logo from '@/assets/logo.webp'
 import Nav from '@/components/Nav'
+import Notification from '@/components/Notification'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useAppDispatch, useAppSelector } from '@/hooks'
@@ -8,7 +8,6 @@ import { logoutAction } from '@/redux/slice/userSlice'
 import { Search, ShoppingBag, User } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import Notification from '@/components/Notification'
 
 const Header = () => {
   const { cartCountProduct } = useAppSelector((state) => state.cart)
@@ -26,13 +25,11 @@ const Header = () => {
     try {
       dispatch(setLoading(true))
       await dispatch(logoutAction()) // Đảm bảo logout xong mới chuyển trang
-      await new Promise((resolve) => setTimeout(resolve, 100)) // Giả lập thời gian xử lý logout
       // Sau khi logout thành công, chuyển trang luôn
       navigate('/login', { replace: true }) // dùng replace để không lưu history
     } catch (error) {
       console.error('Logout failed:', error)
-    } finally {
-      dispatch(setLoading(false)) // Ẩn loading nếu cần trong component khác
+      dispatch(setLoading(false))
     }
 
     // Redirect to login page or show a success message

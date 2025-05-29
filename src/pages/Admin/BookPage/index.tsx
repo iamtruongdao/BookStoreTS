@@ -133,7 +133,7 @@ const BookPage = () => {
     const selectedRows = table.getSelectedRowModel().rows
     const selectedPosts = selectedRows.map((row) => row.original)
     // setPostsToDelete(selectedPosts);
-    setShowDeleteDialog(true)
+    // setShowDeleteDialog(true)
   }
   useEffect(() => {
     fetchData()

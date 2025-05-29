@@ -5,23 +5,27 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { useAppDispatch } from '@/hooks'
+import { setLoading } from '@/redux/slice/appSlice'
 import { loginAction } from '@/redux/slice/userSlice'
-import { ArrowRight, Github, LockKeyhole, Mail } from 'lucide-react'
-import React, { ChangeEvent, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Role } from '@/utils/constant'
+import { ArrowRight, LockKeyhole, Mail } from 'lucide-react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({ email: '', password: '' })
   const [rememberMe, setRememberMe] = useState(false)
+  const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // const res = await LoginApi(formData)
-    // console.log(res)
-    // toast.success(res.message)
     try {
-      await dispatch(loginAction(formData))
-      window.location.href = '/'
+      const res = await dispatch(loginAction(formData)).unwrap()
+      if (res.code === 0 && res.data.roles.includes(Role.Admin)) {
+        navigate('/admin', { replace: true }) // Redirect tới trang dashboard
+      } else if (res.code === 0 && res.data.roles.includes(Role.User)) {
+        navigate('/', { replace: true })
+      }
     } catch (error) {
       console.log(error)
     }
@@ -30,6 +34,9 @@ const LoginPage = () => {
     const { value, name } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
+  useEffect(() => {
+    dispatch(setLoading(false)) // Đảm bảo chỉ tắt loading sau khi đã chuyển hẳn sang trang login
+  }, [])
   return (
     <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 !p-4'>
       <div className='w-full max-w-md'>
@@ -91,7 +98,7 @@ const LoginPage = () => {
                       Remember me
                     </Label>
                   </div>
-                  <Link to='#' className='text-sm font-medium text-blue-600 hover:text-blue-500'>
+                  <Link to='/forgot-password' className='text-sm font-medium text-blue-600 hover:text-blue-500'>
                     Forgot password?
                   </Link>
                 </div>

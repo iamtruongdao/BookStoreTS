@@ -24,3 +24,9 @@ export const verifyOtpApi = (data: { email: string; otp: string }) => {
 export const resetPasswordApi = (data: { email: string; password: string }) => {
   return axios.post<void, BackendResponse<unknown>>('/auth/reset-password', data)
 }
+export const changePasswordApi = (data: { email: string; password: string; otp: string }) => {
+  return axios.post<void, BackendResponse<unknown>>('/auth/change-password', data)
+}
+export const getTotalUserApi = () => {
+  return axios.get<void, BackendResponse<number>>('/auth/count-user')
+}

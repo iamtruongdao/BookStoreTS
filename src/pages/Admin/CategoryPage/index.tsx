@@ -1,9 +1,10 @@
-import { deleteAuthorApi, getAuthorFilterApi } from '@/apis/author.api'
+import { createCategoryrApi, deleteCategoryApi, getCategoryFilterApi, updateCategoryApi } from '@/apis/category.api'
 import { DataTable } from '@/components/Table'
 import { TableToolbar } from '@/components/Table/TableToolBar'
+import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { getColumn } from '@/pages/Admin/CategoryPage/column'
-import { Author, Category } from '@/types'
+import { Category } from '@/types'
 import { capitalizeFirstLetter } from '@/utils'
 import {
   ColumnFiltersState,
@@ -17,15 +18,11 @@ import {
   VisibilityState
 } from '@tanstack/react-table'
 import { useCallback, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { AuthorDetailSheet } from '@/pages/Admin/AuthorPage/AuthorDetailSheet'
 import { CategoryModal } from './Modal'
-import { createCategoryrApi, deleteCategoryApi, getCategoryFilterApi, updateCategoryApi } from '@/apis/category.api'
-import { Button } from '@/components/ui/button'
 
 const CategoryPage = () => {
-  const [sorting, setSorting] = useState<SortingState>([{ id: 'CreatedAt', desc: true }])
+  const [sorting, setSorting] = useState<SortingState>([{ id: 'Id', desc: true }])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,

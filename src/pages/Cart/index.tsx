@@ -16,6 +16,7 @@ import { toast } from 'react-toastify'
 export default function Cart() {
   const { cartProducts, cartCountProduct } = useAppSelector((state) => state.cart)
   const {
+    isLogin,
     userInfo: { id }
   } = useAppSelector((state) => state.user)
   const [isDisabled, setIsDisabled] = useState(false)
@@ -114,7 +115,11 @@ export default function Cart() {
     <div className='w-full max-w-5xl mx-auto p-4'>
       <h1 className='text-2xl font-bold text-green-600 mb-6 text-center'>Giỏ hàng của bạn</h1>
 
-      {cartProducts.length === 0 ? (
+      {!isLogin ? (
+        <Alert className='mb-6'>
+          <AlertDescription>Vui lòng đăng nhập để mua hàng</AlertDescription>
+        </Alert>
+      ) : cartProducts.length === 0 ? (
         <Alert className='mb-6'>
           <AlertDescription>Giỏ hàng của bạn đang trống. Hãy thêm sản phẩm vào giỏ hàng.</AlertDescription>
         </Alert>
@@ -210,7 +215,14 @@ export default function Cart() {
       />
 
       <div className='flex justify-end'>
-        {cartCountProduct === 0 ? (
+        {!isLogin ? (
+          <Link
+            to={'/login'}
+            className='bg-green-600 hover:bg-green-700 text-white p-2 text-lg font-medium rounded-md shadow-md hover:shadow-lg transition-all duration-200'
+          >
+            Đi đến trang đăng nhập
+          </Link>
+        ) : cartCountProduct === 0 ? (
           <Link
             to={'/'}
             className='bg-green-600 hover:bg-green-700 text-white p-2 text-lg font-medium rounded-md shadow-md hover:shadow-lg transition-all duration-200'

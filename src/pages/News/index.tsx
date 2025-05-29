@@ -2,7 +2,10 @@ import { getTagBySlugApi } from '@/apis/tag.api'
 import Breadscrumb from '@/components/Breadscrumb'
 import NewsItem from '@/components/NewsItem'
 import Pagination from '@/components/Pagination'
-import AuthorSkeleton from '@/components/Skeleton/AuthorSkeleton'
+import { NewsItemSkeleton } from '@/components/Skeleton/NewsItemSkeleton'
+import PostSkeleton from '@/components/Skeleton/PostSkeleton'
+import { useAppDispatch } from '@/hooks'
+import { setLoading } from '@/redux/slice/appSlice'
 import { Post, Tag } from '@/types'
 import { formatDateStringToVietnamese } from '@/utils'
 import { CalendarIcon } from 'lucide-react'
@@ -17,25 +20,44 @@ const News: React.FC = () => {
   const [totalPage, setTotalPage] = useState(0)
   const [isLoading, setIsLoading] = useState(false)
   const [posts, setPosts] = useState<Tag>({ createdAt: '', id: '', name: '', posts: [], slug: '' })
+  const dispatch = useAppDispatch()
   const [news, setNews] = useState<Post[]>([])
   const handlePageChange = (e: { selected: number }) => {
     setCurrentPage(e.selected + 1)
   }
   // Sidebar news items
+  const fetchPostByTag = async (isPaginate: boolean = false) => {
+    if (isPaginate) {
+      setIsLoading(true)
+    } else {
+      dispatch(setLoading(true))
+    }
 
-  const fetchPostByTag = async () => {
-    const res = await getTagBySlugApi(tag!, 9, currentPage)
-    if (res.code === 0) {
-      setPosts(res.data)
-      setTotalPage(res.data.totalPage!)
+    try {
+      const res = await getTagBySlugApi(tag!, 9, currentPage)
+      if (res.code === 0) {
+        setPosts(res.data)
+        setTotalPage(res.data.totalPage!)
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      }
+    } catch (error) {
+      console.log(error)
+    } finally {
+      if (isPaginate) {
+        setIsLoading(false)
+      } else {
+        dispatch(setLoading(false))
+      }
     }
   }
   const fetchNews = async () => {
-    // setIsLoading(true)
-    const res = await getTagBySlugApi('tin-nha-nam', 5, 1)
-    if (res.code === 0) {
-      // setIsLoading(false)
-      setNews(res.data.posts)
+    try {
+      const res = await getTagBySlugApi('tin-nha-nam', 5, 1)
+      if (res.code === 0) {
+        setNews(res.data.posts)
+      }
+    } catch (error) {
+      console.log(error)
     }
   }
   useEffect(() => {
@@ -43,7 +65,10 @@ const News: React.FC = () => {
   }, [])
   useEffect(() => {
     fetchPostByTag()
-  }, [tag, currentPage])
+  }, [tag])
+  useEffect(() => {
+    fetchPostByTag(true)
+  }, [currentPage])
   return (
     <>
       <div className='text-sm p-4 text-gray-600 !mb-4 bg-green-50'>
@@ -58,7 +83,7 @@ const News: React.FC = () => {
           <div className='w-3/4 !pr-8 '>
             <h1 className='text-2xl font-bold !mb-6 text-green-700 bg '>{posts.name}</h1>
             {isLoading ? (
-              <AuthorSkeleton />
+              <PostSkeleton />
             ) : (
               <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
                 {posts.posts.length > 0 &&
@@ -95,18 +120,19 @@ const News: React.FC = () => {
           {/* News Sidebar */}
           <div className='w-1/4 !pl-4 border-l border-green-200'>
             <h2 className='text-xl font-bold mb-6 text-green-700'>Danh Mục Tin</h2>
-            {news.length > 0 &&
-              news.map((item, index) => (
-                <NewsItem
-                  link={`/tin-nha-nam/${item.slug}`}
-                  key={index}
-                  w='120px'
-                  h='100px'
-                  title={item.title}
-                  date={item.createdAt!.toString()}
-                  image={item.thumbnail}
-                />
-              ))}
+            {news.length > 0
+              ? news.map((item, index) => (
+                  <NewsItem
+                    link={`/tin-nha-nam/${item.slug}`}
+                    key={index}
+                    w='120px'
+                    h='100px'
+                    title={item.title}
+                    date={item.createdAt!.toString()}
+                    image={item.thumbnail}
+                  />
+                ))
+              : Array.from({ length: 4 }).map(() => <NewsItemSkeleton h='100px' w='120px' />)}
           </div>
         </div>
       </div>

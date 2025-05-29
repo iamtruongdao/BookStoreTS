@@ -10,14 +10,14 @@ import { CancelOrderDialog } from './CancelOrderDialog'
 
 interface ActionsProps {
   row: Row<Order>
-  onEdit: (order: Order) => void
+
   onPrintOrder: (order: Order) => void
   onConfirm: (order: Order) => void
   onViewDetail: (order: Order) => void
   onDelete: (order: Order) => void
   onCreate: (order: Order) => void
 }
-export function Actions({ row, onViewDetail, onDelete, onCreate, onConfirm, onPrintOrder, onEdit }: ActionsProps) {
+export function Actions({ row, onViewDetail, onDelete, onCreate, onConfirm, onPrintOrder }: ActionsProps) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
 
@@ -110,7 +110,7 @@ export function Actions({ row, onViewDetail, onDelete, onCreate, onConfirm, onPr
 interface ColumnsProps {
   onViewDetail: (order: Order) => void
   onDelete: (order: Order) => void
-  onEdit: (order: Order) => void
+
   onConfirm: (order: Order) => void
   onPrintOrder: (order: Order) => void
   onCreate: (order: Order) => void
@@ -120,8 +120,7 @@ export const getColumn = ({
   onConfirm,
   onPrintOrder,
   onCreate,
-  onViewDetail,
-  onEdit
+  onViewDetail
 }: ColumnsProps): ColumnDef<Order>[] => {
   return [
     {
@@ -193,7 +192,6 @@ export const getColumn = ({
       header: 'Hành động',
       cell: ({ row }) => (
         <Actions
-          onEdit={onEdit}
           onPrintOrder={onPrintOrder}
           onCreate={onCreate}
           onConfirm={onConfirm}

@@ -6,6 +6,7 @@ import { RefreshToken } from '../apis/auth.api'
 import { Store } from '@reduxjs/toolkit'
 import { AppDispatch, RootState } from '@/redux'
 import { logoutAction } from '@/redux/slice/userSlice'
+import router from '@/routes'
 let store: Store<RootState> | null = null
 
 export const injectStore = (_store: Store<RootState>) => {
@@ -23,6 +24,8 @@ const instance: AxiosInstance = axios.create({
 instance.interceptors.request.use(
   function (config) {
     const token = Cookies.get('act')
+    console.log('Cookie act:', Cookies.get('act'))
+    console.log('All cookies:', Cookies.get())
     if (token) {
       config.headers.Authorization = 'Bearer ' + token
     }
@@ -51,8 +54,8 @@ instance.interceptors.response.use(
       return Promise.reject(error)
     }
     if (error.response?.status === 401) {
-      await (store?.dispatch as AppDispatch)(logoutAction('1'))
-      window.location.href = '/login'
+      await (store?.dispatch as AppDispatch)(logoutAction())
+      router.navigate('/login')
       return Promise.reject(error)
     }
     const originalRequest = error.config as AxiosRequestConfig
@@ -60,8 +63,9 @@ instance.interceptors.response.use(
       if (!refreshTokenPromise) {
         refreshTokenPromise = RefreshToken()
           .catch(async (error) => {
-            await (store?.dispatch as AppDispatch)(logoutAction('1'))
-            window.location.href = '/login'
+            await (store?.dispatch as AppDispatch)(logoutAction())
+            router.navigate('/login')
+
             return Promise.reject(error)
           })
           .finally(() => {

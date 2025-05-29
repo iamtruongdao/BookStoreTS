@@ -94,7 +94,6 @@ const OrderPage = () => {
         onDelete: handleDelete,
         onCreate: handleCreateOrderShip,
         onViewDetail: handleViewDetail,
-        onEdit: handleEdit,
         onPrintOrder: handlePrint,
         onConfirm: handleConfirm
       })

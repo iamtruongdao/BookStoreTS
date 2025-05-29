@@ -1,3 +1,5 @@
+import { Book } from './Book'
+
 export interface Discount {
   id: string
   code: string
@@ -12,6 +14,7 @@ export interface Discount {
   isActive: boolean
   userUsage: string[]
   productIds: string[]
+  products: Book[]
   maxUsage: number
   useCount: number
   maxUsagePerUser: number

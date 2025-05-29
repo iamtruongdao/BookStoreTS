@@ -99,7 +99,7 @@ const UserPage = () => {
       const response = await getAllUserApi(queryParams)
       if (response.code === 0) {
         setData(response.data.items)
-        // setTotalRows(response.data.totalPages)
+        setTotalRows(response.data.totalPages)
       }
     } finally {
       setIsLoading(false)
@@ -133,17 +133,19 @@ const UserPage = () => {
         setShowSort={setShowSort}
         onDeleteSelected={handleDeleteSelected}
       />
-      <AuthorDetailSheet author={selectedAuthor} open={showDetail} onOpenChange={setShowDetail} />
-      <div className='p-2'>  {isRefreshing || isLoading ? (
-        <div className='space-y-4 p-2'>
-          <Skeleton className='h-10 w-full rounded-md' />
-          <Skeleton className='h-10 w-full rounded-md' />
-          <Skeleton className='h-10 w-full rounded-md' />
-        </div>
-      ) : (
-        <DataTable table={table} className='bg-background' />
-      )}</div>
-    
+      {/* <AuthorDetailSheet author={selectedAuthor} open={showDetail} onOpenChange={setShowDetail} /> */}
+      <div className='p-2'>
+        {' '}
+        {isRefreshing || isLoading ? (
+          <div className='space-y-4 p-2'>
+            <Skeleton className='h-10 w-full rounded-md' />
+            <Skeleton className='h-10 w-full rounded-md' />
+            <Skeleton className='h-10 w-full rounded-md' />
+          </div>
+        ) : (
+          <DataTable table={table} className='bg-background' />
+        )}
+      </div>
     </div>
   )
 }

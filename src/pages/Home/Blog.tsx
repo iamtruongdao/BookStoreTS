@@ -1,6 +1,7 @@
 import { getTagBySlugApi } from '@/apis/tag.api'
 import CarouselBlog from '@/components/CarouselBlog'
 import NewsItem from '@/components/NewsItem'
+import { NewsItemSkeleton } from '@/components/Skeleton/NewsItemSkeleton'
 import { Post } from '@/types'
 import { useEffect, useState } from 'react'
 
@@ -32,17 +33,18 @@ const Blog = () => {
           <CarouselBlog opts slide={slide} />
           {/* Right sidebar with smaller news items */}
           <div className='lg:col-span-1  space-y-4'>
-            {news.length > 0 &&
-              news.map((item) => (
-                <NewsItem
-                  link={`/bien-tap-vien-gioi-thieu/${item.slug}`}
-                  title={item.title}
-                  h='125px'
-                  w='196px'
-                  image={item.thumbnail}
-                  date={item.createdAt!}
-                />
-              ))}
+            {news.length > 0
+              ? news.map((item) => (
+                  <NewsItem
+                    link={`/bien-tap-vien-gioi-thieu/${item.slug}`}
+                    title={item.title}
+                    h='125px'
+                    w='196px'
+                    image={item.thumbnail}
+                    date={item.createdAt!}
+                  />
+                ))
+              : Array.from({ length: 4 }).map(() => <NewsItemSkeleton h='125px' w='196px' />)}
           </div>
         </div>
       </div>

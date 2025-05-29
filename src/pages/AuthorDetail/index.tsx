@@ -9,7 +9,7 @@ import { Author, Book } from '@/types'
 import _ from 'lodash'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { BookSection } from '../Home/BookSection'
+import { BookSection } from '@/pages/Home/BookSection'
 
 const AuthorDetail = () => {
   const dispatch = useAppDispatch()

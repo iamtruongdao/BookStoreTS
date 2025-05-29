@@ -1,21 +1,23 @@
 import { getDiscountAmount } from '@/apis/discount.api'
 import { getDistrict, getFeeShip, getProvince, getWard, leadtimeShip } from '@/apis/ghn.api'
 import { checkOutApi, createOrderApi, createPaymentApi } from '@/apis/order.api'
+import { getVoucherSave } from '@/apis/userDiscount.api'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useAppSelector } from '@/hooks'
-import { CartProduct, District, OrderCheckout, OrderProduct, Province, Ward } from '@/types'
-import { formatMoney } from '@/utils'
+import { ApplyTo, CartProduct, District, OrderCheckout, OrderProduct, Province, UserDiscount, Ward } from '@/types'
+import { formatDiscountInfo, formatMoney } from '@/utils'
 import { PAYMENT } from '@/utils/constant'
 import { formatDate } from 'date-fns'
 import { debounce } from 'lodash'
-import { ChevronLeft, CreditCard } from 'lucide-react'
+import { ChevronDown, ChevronLeft, CreditCard } from 'lucide-react'
 import { ChangeEvent, useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 // Interface definitions for location data
 
@@ -45,7 +47,7 @@ export default function CheckoutPage() {
     feeShip: 0,
     voucherDiscount: 0
   })
-
+  const navigate = useNavigate()
   const [orderItems, setOrderItems] = useState<OrderProduct[]>([])
   const [provinceId, setProvinceId] = useState('')
   const [districtId, setDistrictId] = useState('')
@@ -61,6 +63,8 @@ export default function CheckoutPage() {
   const [isLoadingDistricts, setIsLoadingDistricts] = useState(false)
   const [isLoadingWards, setIsLoadingWards] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [userDiscounts, setUserDiscounts] = useState<UserDiscount[]>([])
+  const [isLoading, setIsLoading] = useState(false)
   const buildData = (data: CartProduct[]) => {
     return data.map((item) => {
       return {
@@ -71,6 +75,23 @@ export default function CheckoutPage() {
       }
     })
   }
+  const getDiscount = async () => {
+    setIsLoading(true)
+
+    try {
+      const res = await getVoucherSave({ pageNumber: 1, pageSize: 10 })
+      if (res.code === 0) {
+        setUserDiscounts(res.data.items)
+      }
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+  useEffect(() => {
+    getDiscount()
+  }, [])
   const provinceNameMap = useMemo(() => {
     const map: Record<string, string> = {}
     provinces.forEach((p) => {
@@ -137,15 +158,15 @@ export default function CheckoutPage() {
       setOrderItems(res.data.items)
     }
   }
-  const handleGetVoucher = async () => {
+  const handleGetVoucher = async (code: string) => {
+    if (!code) return
     const res = await getDiscountAmount({
-      codeId: discountCode,
+      codeId: code,
       userId: userId,
       items: buildData(cartProducts)
     })
     if (res.code === 0) {
-      console.log(res.data)
-
+      setDiscountCode(code)
       setOrderCheckout((prev) => ({ ...prev, voucherDiscount: res.data.amount }))
     }
   }
@@ -330,7 +351,7 @@ export default function CheckoutPage() {
       if (res.code === 0) {
         toast.success('Đặt hàng thành công!')
         setTimeout(() => {
-          window.location.href = `order/${res.data.id}`
+          navigate(`/order/${res.data.id}`)
         }, 1000)
       }
     }
@@ -564,13 +585,77 @@ export default function CheckoutPage() {
 
               <div className='mt-4 border-t border-t-gray-300 pt-4'>
                 <div className='flex justify-between pb-4'>
-                  <Input
-                    placeholder='Nhập mã giảm giá'
-                    value={discountCode}
-                    onChange={(e) => setDiscountCode(e.target.value)}
-                    className='flex-grow focus-visible:ring-transparent'
-                  />
-                  <Button onClick={handleGetVoucher} className='ml-2 bg-blue-500 cursor-pointer hover:bg-blue-600'>
+                  <div className='relative grow'>
+                    <Input
+                      placeholder='Nhập mã giảm giá'
+                      value={discountCode}
+                      onChange={(e) => setDiscountCode(e.target.value)}
+                      className='flex-grow focus-visible:ring-transparent'
+                    />
+                    <DropdownMenu>
+                      <DropdownMenuTrigger className='absolute right-0 top-0 h-full'>
+                        <Button variant='ghost' size='icon' className=''>
+                          <ChevronDown className='h-4 w-4' />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align='end' className='w-80 bg-white shadow-lg border rounded-lg'>
+                        {isLoading ? (
+                          <div className='p-4 text-center text-gray-500'>Đang tải...</div>
+                        ) : userDiscounts.length > 0 ? (
+                          userDiscounts.map((userDiscount) => {
+                            const discount = userDiscount.discount
+                            return (
+                              <DropdownMenuItem
+                                key={userDiscount.id}
+                                onClick={() => {
+                                  handleGetVoucher(discount.code)
+                                }}
+                                className='cursor-pointer p-4 hover:bg-gray-50 border-none focus:bg-gray-50'
+                              >
+                                <div className='flex items-start gap-3 w-full'>
+                                  {/* Logo/Icon Circle */}
+                                  <div className='w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center flex-shrink-0'>
+                                    <span className='text-white text-xs font-bold'>{discount.code.toUpperCase()}</span>
+                                  </div>
+
+                                  {/* Content */}
+                                  <div className='flex-1 min-w-0'>
+                                    <div className='font-medium text-gray-900 text-sm mb-1'>
+                                      {formatDiscountInfo(discount)}
+                                    </div>
+                                    <div className='text-xs text-gray-600 mb-1'>
+                                      Đơn Tối Thiểu
+                                      {discount.minOrderValue ? ` ${discount.minOrderValue.toLocaleString()}đ` : ' 0đ'}
+                                    </div>
+                                    {discount.applyTo === ApplyTo.Specific && (
+                                      <div className='inline-block'>
+                                        <span className='text-xs bg-red-100 text-red-600 px-2 py-1 rounded'>
+                                          Sản phẩm nhất định
+                                        </span>
+                                      </div>
+                                    )}
+                                    <div className='text-xs text-gray-500 mt-1'>
+                                      HSD: {new Date(discount.endDate).toLocaleDateString('vi-VN')}
+                                    </div>
+                                  </div>
+
+                                  {/* Quantity indicator */}
+                                  <div className='text-red-500 text-xs font-medium'>×{discount.maxUsagePerUser}</div>
+                                </div>
+                              </DropdownMenuItem>
+                            )
+                          })
+                        ) : (
+                          <div className='p-4 text-center text-gray-500'>Không có mã giảm giá</div>
+                        )}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+
+                  <Button
+                    onClick={() => handleGetVoucher(discountCode)}
+                    className='ml-2 bg-blue-500 cursor-pointer hover:bg-blue-600'
+                  >
                     Áp dụng
                   </Button>
                 </div>
@@ -586,7 +671,9 @@ export default function CheckoutPage() {
                   </div>
                   <div className='flex justify-between py-2'>
                     <span className='text-gray-600'>Voucher</span>
-                    <span>{orderCheckout.voucherDiscount > 0 ? formatMoney(orderCheckout.voucherDiscount) : '-'}</span>
+                    <span>
+                      {orderCheckout.voucherDiscount > 0 ? '-' + formatMoney(orderCheckout.voucherDiscount) : '-'}
+                    </span>
                   </div>
                   <div className='flex justify-between py-2 font-semibold text-lg border-t border-t-gray-300 mt-2 pt-3'>
                     <span>Tổng cộng</span>

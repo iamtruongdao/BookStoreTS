@@ -12,10 +12,12 @@ export const getUserAction = createAsyncThunk('user/get-user', async () => {
 })
 interface UserState {
   userInfo: UserResponse
+  accessToken: string
   isLogin: boolean
 }
 const initialState: UserState = {
   userInfo: { address: '', email: '', fullName: '', isLocked: false, phoneNumber: '', roles: [], id: '' },
+  accessToken: '',
   isLogin: false
 }
 const userSlide = createSlice({
@@ -29,6 +31,7 @@ const userSlide = createSlice({
     builder.addCase(loginAction.fulfilled, (state, action) => {
       state.isLogin = true
       state.userInfo = action.payload.data.userAccount
+      state.accessToken = action.payload.data.token.accessToken
     })
     builder.addCase(loginAction.rejected, (state) => {
       state.isLogin = false

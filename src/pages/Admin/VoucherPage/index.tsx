@@ -23,7 +23,7 @@ import { VoucherDetailSheet } from './VoucherDetailSheet'
 
 const VoucherPage = () => {
   const navigate = useNavigate()
-  const [sorting, setSorting] = useState<SortingState>([{ id: 'CreatedAt', desc: true }])
+  const [sorting, setSorting] = useState<SortingState>([{ id: 'Id', desc: true }])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,

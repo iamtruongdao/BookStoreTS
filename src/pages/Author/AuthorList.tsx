@@ -9,6 +9,7 @@ import AuthorSkeleton from '@/components/Skeleton/AuthorSkeleton'
 import { Author, Post } from '@/types'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { NewsItemSkeleton } from '@/components/Skeleton/NewsItemSkeleton'
 // Author type definition
 
 const AuthorList: React.FC = () => {
@@ -33,7 +34,6 @@ const AuthorList: React.FC = () => {
     const fetData = async () => {
       setIsLoading(true)
       try {
-        await new Promise((resolve) => setTimeout(resolve, 2000))
         const res = await getAuthorApi({ pageNumber: currentPage, pageSize: 12 })
         setAuthors(res.data.items)
         setTotalPage(res.data.totalPages)
@@ -99,18 +99,19 @@ const AuthorList: React.FC = () => {
           {/* News Sidebar */}
           <div className='w-1/4 !pl-4 border-l border-green-200'>
             <h2 className='text-xl font-bold mb-6 text-green-700'>Danh Mục Tin</h2>
-            {news.length &&
-              news.map((item, index) => (
-                <NewsItem
-                  key={index}
-                  link={`/tin-nha-nam/${item.slug}`}
-                  w='120px'
-                  h='100px'
-                  title={item.title}
-                  date={item.createdAt!}
-                  image={item.thumbnail}
-                />
-              ))}
+            {news.length > 0
+              ? news.map((item, index) => (
+                  <NewsItem
+                    key={index}
+                    link={`/tin-nha-nam/${item.slug}`}
+                    w='120px'
+                    h='100px'
+                    title={item.title}
+                    date={item.createdAt!}
+                    image={item.thumbnail}
+                  />
+                ))
+              : Array.from({ length: 4 }).map(() => <NewsItemSkeleton h='100px' w='120px' />)}
           </div>
         </div>
       </div>

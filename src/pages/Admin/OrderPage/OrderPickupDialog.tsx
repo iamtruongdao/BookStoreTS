@@ -1,3 +1,4 @@
+import { printShip } from '@/apis/ghn.api'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Shop } from '@/types'
@@ -18,7 +19,13 @@ const OrderPickupDialog: React.FC<OrderPickUpProps> = ({ trackingNumber, open, o
       setIsLoading(false)
     }
   }, [open, isLoading, trackingNumber])
-
+  const handlePrint = async () => {
+    if (!trackingNumber) return
+    const res = await printShip(trackingNumber)
+    if (res.code === 200) {
+      window.open(`https://dev-online-gateway.ghn.vn/a5/public-api/printA5?token=${res.data.token}`, '_blank')
+    }
+  }
   return (
     <div className='font-sans'>
       {/* Button to open the dialog */}
@@ -53,7 +60,7 @@ const OrderPickupDialog: React.FC<OrderPickUpProps> = ({ trackingNumber, open, o
               <Button
                 variant='outline'
                 className='border-orange-500 text-orange-500 hover:bg-orange-50 flex items-center gap-2'
-                onClick={() => console.log('Print shipping label')}
+                onClick={handlePrint}
               >
                 <svg xmlns='http://www.w3.org/2000/svg' className='h-4 w-4' viewBox='0 0 20 20' fill='currentColor'>
                   <path

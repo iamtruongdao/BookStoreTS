@@ -13,9 +13,9 @@ import { OrderState } from '@/utils/constant'
 export const checkOutApi = (data: Checkout) => {
   return axios.post<void, BackendResponse<{ checkout: OrderCheckout; items: OrderProduct[] }>>('/order/checkout', data)
 }
-export const getOrderByUserIdApi = (status?: string) => {
-  return axios.get<void, BackendResponse<Order[]>>(`/order/get-order`, {
-    params: status !== 'all' ? { status } : undefined
+export const getOrderByUserIdApi = (params: Partial<Record<string, string>>) => {
+  return axios.get<void, BackendResponse<Paginate<Order>>>(`/order/get-order`, {
+    params
   })
 }
 export const getOrderByIdApi = (id: string) => {

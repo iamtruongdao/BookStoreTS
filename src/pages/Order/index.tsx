@@ -14,36 +14,61 @@ import { formatDate, formatMoney } from '@/utils'
 import { getOrderByUserIdApi } from '@/apis/order.api'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
+import Pagination from '@/components/Pagination'
+import { OrderSkeleton } from '@/components/Skeleton/OrderSkeleton'
 
 const OrderHistory: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<string>('all')
   const [orders, setOrders] = useState<Order[]>([])
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [totalPages, setTotalPages] = useState<number>(0)
   const [filteredOrders, setFilteredOrders] = useState<Order[]>([])
-  const productName = 'Áo Thun Cao Cấp'
 
   const fetchOrder = async () => {
-    const res = await getOrderByUserIdApi()
-    if (res.code === 0) {
-      setOrders(res.data)
-      setFilteredOrders(res.data)
+    setIsLoading(true)
+    try {
+      const res = await getOrderByUserIdApi({
+        pageNumber: currentPage.toString(),
+        pageSize: '5',
+        status: selectedTab !== 'all' && selectedTab !== PaymentStatus.WaitingPaid ? selectedTab : undefined,
+        paymentStatus: selectedTab === PaymentStatus.WaitingPaid ? PaymentStatus.WaitingPaid : undefined
+      })
+      if (res.code === 0) {
+        setOrders(res.data.items)
+        setFilteredOrders(res.data.items)
+        setTotalPages(res.data.totalPages)
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      }
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsLoading(false)
     }
   }
+  const handlePageChange = (e: { selected: number }) => {
+    setCurrentPage(e.selected + 1)
+  }
+  useEffect(() => {
+    console.log(selectedTab)
 
+    setCurrentPage(1)
+  }, [selectedTab])
   useEffect(() => {
     fetchOrder()
-  }, [])
+  }, [currentPage, selectedTab])
 
-  useEffect(() => {
-    if (selectedTab === 'all') {
-      setFilteredOrders(orders)
-    } else if (selectedTab === 'waiting_payment') {
-      // Filter orders that are waiting for payment
-      setFilteredOrders(orders.filter((order) => order.paymentStatus === PaymentStatus.WaitingPaid))
-    } else {
-      // Filter by order status
-      setFilteredOrders(orders.filter((order) => order.orderStatus === selectedTab))
-    }
-  }, [selectedTab, orders])
+  // useEffect(() => {
+  //   if (selectedTab === 'all') {
+  //     setFilteredOrders(orders)
+  //   } else if (selectedTab === 'waiting_payment') {
+  //     // Filter orders that are waiting for payment
+  //     setFilteredOrders(orders.filter((order) => order.paymentStatus === PaymentStatus.WaitingPaid))
+  //   } else {
+  //     // Filter by order status
+  //     setFilteredOrders(orders.filter((order) => order.orderStatus === selectedTab))
+  //   }
+  // }, [selectedTab, orders])
 
   // Helper function to determine if an order needs payment
   const needsPayment = (order: Order) => {
@@ -100,7 +125,7 @@ const OrderHistory: React.FC = () => {
                   Tất cả
                 </TabsTrigger>
                 <TabsTrigger
-                  value='waiting_payment'
+                  value={PaymentStatus.WaitingPaid}
                   className='px-2 text-sm data-[state=active]:bg-orange-50 data-[state=active]:text-orange-600 data-[state=active]:font-medium'
                   aria-label='Hiển thị đơn hàng chờ thanh toán'
                 >
@@ -149,9 +174,16 @@ const OrderHistory: React.FC = () => {
                   transition={{ duration: 0.2 }}
                   className='mt-6 space-y-6 w-full'
                 >
-                  {filteredOrders.length > 0 ? (
+                  {isLoading ? (
+                    // Loading skeleton - show 3 skeleton items
                     <>
-                      {filteredOrders.map((order) => (
+                      {[1, 2, 3].map((index) => (
+                        <OrderSkeleton key={index} />
+                      ))}
+                    </>
+                  ) : orders.length > 0 ? (
+                    <>
+                      {orders.map((order) => (
                         <article key={order.id} className='order-item'>
                           <Card className='border-none gap-0 py-0 shadow-sm overflow-hidden'>
                             <CardHeader className='bg-white p-5 pb-3'>
@@ -179,9 +211,7 @@ const OrderHistory: React.FC = () => {
                             </CardHeader>
                             <Separator className='bg-gray-100' />
                             <CardContent className='bg-white p-5'>
-                              <div className='mb-3'>
-                                <h3 className='font-medium text-gray-800'>{productName}</h3>
-                              </div>
+                              <div className='mb-3'></div>
 
                               {order.orderItem.map((variation, index) => (
                                 <div key={index} className='flex py-3 border-b border-gray-100 last:border-b-0'>
@@ -236,10 +266,6 @@ const OrderHistory: React.FC = () => {
                                       <span>Tạm tính:</span>
                                       <span>{formatMoney(order.orderCheckout.totalApplyDiscount)}</span>
                                     </div>
-                                    {/* <div className='flex items-center justify-between w-56 mt-1'>
-                                      <span>Giảm giá:</span>
-                                      <span>-{formatMoney(order.orderCheckout.totalApplyDiscount)}</span>
-                                    </div> */}
                                     <div className='flex items-center justify-between w-56 mt-1'>
                                       <span>Phí vận chuyển:</span>
                                       <span>{formatMoney(order.orderCheckout.feeShip || 0)}</span>
@@ -323,6 +349,7 @@ const OrderHistory: React.FC = () => {
                 </motion.div>
               </AnimatePresence>
             </div>
+            <Pagination currentPage={currentPage} pageCount={totalPages} onPageChange={handlePageChange} />
           </Tabs>
         </div>
       </section>

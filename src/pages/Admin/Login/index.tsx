@@ -5,6 +5,7 @@ import { useAppDispatch } from '@/hooks'
 import { loginAction } from '@/redux/slice/userSlice'
 import { toast } from 'react-toastify'
 import { Role } from '@/utils/constant'
+import { useNavigate } from 'react-router-dom'
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('')
@@ -15,6 +16,8 @@ export default function AdminLogin() {
   const [emailError, setEmailError] = useState('')
   const [passwordError, setPasswordError] = useState('')
   const dispatch = useAppDispatch()
+  const navigate = useNavigate()
+
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     return emailRegex.test(email)
@@ -48,14 +51,12 @@ export default function AdminLogin() {
 
     try {
       setLoading(true)
-
       // Giả lập quá trình đăng nhập
-
       // Ở đây bạn sẽ thêm logic xác thực thực tế
       const res = await dispatch(loginAction({ email, password })).unwrap()
 
       if (res.code === 0 && res.data.roles.includes(Role.Admin)) {
-        window.location.replace('/admin') // Redirect tới trang dashboard
+        navigate('/admin', { replace: true }) // Redirect tới trang dashboard
         // Redirect tới trang dashboard
       } else {
         toast.error('Email hoặc mật khẩu không chính xác!')
