@@ -31,7 +31,7 @@ function App() {
     if (isLogin && roles.includes(Role.User)) {
       dispatch(getCartAction(id))
     }
-  }, [isLogin, roles])
+  }, [roles.length])
   return (
     <>
       <div className={`${isGlobalLoading ? 'overflow-auto  hide-scrollbar' : ''} h-screen`}>

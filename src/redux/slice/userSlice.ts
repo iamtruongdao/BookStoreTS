@@ -30,8 +30,14 @@ const userSlide = createSlice({
     })
     builder.addCase(loginAction.fulfilled, (state, action) => {
       state.isLogin = true
-      state.userInfo = action.payload.data.userAccount
-      state.accessToken = action.payload.data.token.accessToken
+      const data = action.payload.data
+      state.userInfo = data.userAccount
+      const token = data.token.accessToken
+      state.accessToken = token
+      const expiryDate = new Date()
+      expiryDate.setTime(expiryDate.getTime() + 7 * 24 * 60 * 60 * 1000) // 7 days
+      document.cookie = `actk=${token}; samesite=none; secure; path=/; expires=${expiryDate.toUTCString()}`
+      document.cookie = `rft=${data.token.refreshToken}; samesite=none; secure; path=/; expires=${expiryDate.toUTCString()}`
     })
     builder.addCase(loginAction.rejected, (state) => {
       state.isLogin = false
@@ -39,6 +45,8 @@ const userSlide = createSlice({
     builder.addCase(logoutAction.fulfilled, (state) => {
       state.isLogin = false
       state.userInfo = { address: '', email: '', fullName: '', isLocked: false, phoneNumber: '', roles: [], id: '' }
+      document.cookie = 'actk=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; samesite=none; secure'
+      document.cookie = 'rft=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; samesite=none; secure'
     })
     builder.addCase(getUserAction.fulfilled, (state, { payload }) => {
       state.isLogin = true

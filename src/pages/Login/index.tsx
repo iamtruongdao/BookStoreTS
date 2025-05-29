@@ -8,17 +8,19 @@ import { useAppDispatch } from '@/hooks'
 import { setLoading } from '@/redux/slice/appSlice'
 import { loginAction } from '@/redux/slice/userSlice'
 import { Role } from '@/utils/constant'
-import { ArrowRight, LockKeyhole, Mail } from 'lucide-react'
+import { ArrowRight, Loader2, LockKeyhole, Mail } from 'lucide-react'
 import React, { ChangeEvent, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({ email: '', password: '' })
   const [rememberMe, setRememberMe] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setIsLoading(true)
     try {
       const res = await dispatch(loginAction(formData)).unwrap()
       if (res.code === 0 && res.data.roles.includes(Role.Admin)) {
@@ -28,6 +30,8 @@ const LoginPage = () => {
       }
     } catch (error) {
       console.log(error)
+    } finally {
+      setIsLoading(false)
     }
   }
   const handleOnchage = (e: ChangeEvent<HTMLInputElement>) => {
@@ -105,10 +109,20 @@ const LoginPage = () => {
 
                 <Button
                   type='submit'
+                  disabled={isLoading}
                   className='w-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2'
                 >
-                  Sign In
-                  <ArrowRight className='w-4 h-4' />
+                  {isLoading ? (
+                    <>
+                      <Loader2 className='w-4 h-4 animate-spin' />
+                      Loading...
+                    </>
+                  ) : (
+                    <>
+                      Sign In
+                      <ArrowRight className='w-4 h-4' />
+                    </>
+                  )}
                 </Button>
               </div>
             </form>

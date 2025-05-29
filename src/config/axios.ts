@@ -23,9 +23,8 @@ const instance: AxiosInstance = axios.create({
 })
 instance.interceptors.request.use(
   function (config) {
-    const token = Cookies.get('act')
-    console.log('Cookie act:', Cookies.get('act'))
-    console.log('All cookies:', Cookies.get())
+    const token = Cookies.get('act') ?? Cookies.get('actk')
+
     if (token) {
       config.headers.Authorization = 'Bearer ' + token
     }
