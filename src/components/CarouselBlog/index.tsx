@@ -4,6 +4,7 @@ import { Post } from '@/types'
 import { formatDateStringToVietnamese } from '@/utils'
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { CarouselSkeleton } from '../Skeleton/SlideSkeleton'
 
 type Props = {
   slide: Post[]
@@ -15,7 +16,7 @@ const CarouselBlog: React.FC<Props> = (props) => {
     <div className='lg:col-span-2 bg-white rounded-md flex-2/3 overflow-hidden shadow-sm'>
       <Carousel opts={{ loop: opts }} className='w-full'>
         <CarouselContent>
-          {slide.length > 0 &&
+          {slide.length > 0 ? (
             slide.map((item, index) => (
               <CarouselItem key={index}>
                 <div className=''>
@@ -42,7 +43,10 @@ const CarouselBlog: React.FC<Props> = (props) => {
                   </Card>
                 </div>
               </CarouselItem>
-            ))}
+            ))
+          ) : (
+            <CarouselSkeleton count={1} />
+          )}
         </CarouselContent>
       </Carousel>
     </div>

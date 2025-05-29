@@ -66,9 +66,12 @@ const Nav = () => {
         </NavigationMenuItem>
 
         <NavigationMenuItem className='group relative'>
-          <NavigationMenuTrigger className='text-gray-800 bg-transparent cursor-pointer text-base'>
-            Sách Nhã Nam
-          </NavigationMenuTrigger>
+          <Link to={'/book'}>
+            <NavigationMenuTrigger className='text-gray-800 bg-transparent cursor-pointer text-base'>
+              Sách Nhã Nam
+            </NavigationMenuTrigger>
+          </Link>
+
           <NavigationMenuContent className='left-[-220px] border-none p-0 !top-[40px] w-full'>
             {/* Dropdown Panel */}
             <div className='z-10 bg-white shadow-lg w-full min-w-[980px] '>

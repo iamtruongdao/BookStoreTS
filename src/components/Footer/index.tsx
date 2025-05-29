@@ -52,9 +52,9 @@ const Footer = () => {
           {/* Column 1 - Logo and contact */}
           <div className='flex flex-col gap-4'>
             <div className='flex items-center gap-2'>
-              <img src={logo} alt='Nhà Nam Logo' className='h-12' />
+              {/* <img src={logo} alt='Nhà Nam Logo' className='h-12' /> */}
               <div>
-                <div className='text-green-600 font-bold text-lg'>nhà nam</div>
+                <div className='text-green-600 font-bold text-lg'>nhã nam</div>
                 <div className='text-green-600 italic text-sm'>Đời vì sách là thế giới</div>
               </div>
             </div>
@@ -97,9 +97,9 @@ const Footer = () => {
                 <span>02435146875</span>
               </div>
 
-              <a href='https://nhanam.vn' className='text-green-600 underline mt-2'>
+              {/* <a href='https://nhanam.vn' className='text-green-600 underline mt-2'>
                 https://nhanam.vn
-              </a>
+              </a> */}
             </div>
           </div>
 
@@ -155,25 +155,18 @@ const Footer = () => {
                 </a>
               </li>
             </ul>
-
-            <div className='!mt-6'>
-              <img src='/api/placeholder/150/50' alt='Đã thông báo Bộ Công Thương' className='max-w-full h-auto' />
-            </div>
           </div>
 
           {/* Column 4 - PHƯƠNG THỨC THANH TOÁN */}
           <div>
             <h3 className='text-green-600 font-bold text-lg !mb-4'>PHƯƠNG THỨC THANH TOÁN</h3>
             <div className='grid grid-cols-3 gap-2'>
-              <img src='/api/placeholder/60/40' alt='Visa' className='h-8' />
-              <img src='/api/placeholder/60/40' alt='Mastercard' className='h-8' />
-              <img src='/api/placeholder/60/40' alt='JCB' className='h-8' />
-              <img src='/api/placeholder/60/40' alt='MOMO' className='h-8' />
-              <img src='/api/placeholder/60/40' alt='COD' className='h-8' />
-              <img src='/api/placeholder/60/40' alt='Banking' className='h-8' />
-              <img src='/api/placeholder/60/40' alt='Napas' className='h-8' />
-              <img src='/api/placeholder/60/40' alt='VNPay' className='h-8' />
-              <img src='/api/placeholder/60/40' alt='Payoo' className='h-8' />
+              <img
+                src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTp1v7T287-ikP1m7dEUbs2n1SbbLEqkMd1ZA&s'
+                alt='VNPay'
+                className='h-8'
+              />
+              <span className='font-bold'>COD</span>
             </div>
 
             <div className='!mt-4 flex justify-end'>

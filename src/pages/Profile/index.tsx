@@ -1,5 +1,5 @@
 // Profile.tsx
-import { Bell, ShoppingBag, Tag, User, Wallet } from 'lucide-react'
+import { ShoppingBag, User } from 'lucide-react'
 import React from 'react'
 import { Link, NavLink, Outlet } from 'react-router-dom'
 
@@ -55,7 +55,14 @@ const Profile: React.FC = () => {
           >
             <span>Đổi Mật Khẩu</span>
           </NavLink>
-
+          <NavLink
+            to='/profile/voucher'
+            className={({ isActive }) =>
+              `${isActive ? 'text-orange-500  ' : 'text-gray-600'} block pl-8 py-2  hover:bg-gray-50 rounded px-2`
+            }
+          >
+            <span>Kho voucher</span>
+          </NavLink>
           {/* <Link to='/profile/notifications' className='block pl-8 py-2 text-gray-600 hover:bg-gray-50 rounded px-2'>
             <span>Cài Đặt Thông Báo</span>
           </Link>

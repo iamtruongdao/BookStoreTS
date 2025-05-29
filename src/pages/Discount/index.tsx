@@ -1,15 +1,17 @@
 import { getDiscountFilter } from '@/apis/discount.api'
+import { saveVoucher } from '@/apis/userDiscount.api'
 import Pagination from '@/components/Pagination'
+import { useAppSelector } from '@/hooks'
 import { ApplyTo, Discount, DiscountType } from '@/types'
 import { formatDate } from '@/utils'
 import { Calendar, Gift, Heart, ShoppingCart, Tag, Users } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
-
-// Types and Interfaces
-
-// Sample discount data
+import { toast } from 'react-toastify'
 
 const DiscountPage: React.FC = () => {
+  const {
+    userInfo: { id }
+  } = useAppSelector((state) => state.user)
   const [discounts, setDiscounts] = useState<Discount[]>([])
   const [totalPages, setTotalPages] = useState<number>(1)
   const [currentPage, setCurrentPage] = useState<number>(1)
@@ -21,20 +23,28 @@ const DiscountPage: React.FC = () => {
       setTotalPages(res.data.totalPages)
     }
   }
+  const handleSave = async (discountId: string) => {
+    const res = await saveVoucher({ discountId, userId: id })
+    if (res.code === 0) {
+      toast.success('bạn đã lưu voucher thành công')
+    } else {
+      toast.error('bạn dã lưu voucher này r')
+    }
+  }
   useEffect(() => {
     getDiscounts()
   }, [currentPage])
-  const toggleSaveCoupon = (couponId: string): void => {
-    setSavedCoupons((prev) => {
-      const newSaved = new Set(prev)
-      if (newSaved.has(couponId)) {
-        newSaved.delete(couponId)
-      } else {
-        newSaved.add(couponId)
-      }
-      return newSaved
-    })
-  }
+  // const toggleSaveCoupon = (couponId: string): void => {
+  //   setSavedCoupons((prev) => {
+  //     const newSaved = new Set(prev)
+  //     if (newSaved.has(couponId)) {
+  //       newSaved.delete(couponId)
+  //     } else {
+  //       newSaved.add(couponId)
+  //     }
+  //     return newSaved
+  //   })
+  // }
   const handlePageChange = (e: { selected: number }) => {
     setCurrentPage(e.selected + 1)
   }
@@ -81,7 +91,7 @@ const DiscountPage: React.FC = () => {
       <div className='max-w-4xl mx-auto px-4 py-6'>
         <div className='space-y-4'>
           {discounts.length > 0 &&
-            discounts.map((discount: Discount) => (
+            discounts.map((discount) => (
               <div
                 key={discount.id}
                 className={`bg-white rounded-lg shadow-sm border transition-all hover:shadow-md ${
@@ -157,7 +167,7 @@ const DiscountPage: React.FC = () => {
                       </div>
 
                       <button
-                        onClick={() => discount.id && toggleSaveCoupon(discount.id)}
+                        onClick={() => handleSave(discount.id)}
                         className={`mt-3 px-4 py-2 rounded-md text-sm font-medium transition-all flex items-center gap-2 active:scale-95 ${
                           discount.id && savedCoupons.has(discount.id)
                             ? 'bg-pink-500 text-white hover:bg-pink-600'
@@ -187,11 +197,6 @@ const DiscountPage: React.FC = () => {
       </div>
       <Pagination currentPage={currentPage} pageCount={totalPages} onPageChange={handlePageChange} />
       {/* Footer */}
-      <div className='bg-white border-t mt-8'>
-        <div className='max-w-4xl mx-auto px-4 py-6 text-center'>
-          <p className='text-gray-500 text-sm'>💡 Mẹo: Lưu những voucher yêu thích để không bỏ lỡ ưu đãi!</p>
-        </div>
-      </div>
     </div>
   )
 }

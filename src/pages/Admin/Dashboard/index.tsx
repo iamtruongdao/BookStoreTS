@@ -1,53 +1,33 @@
-import { useEffect, useState } from 'react'
-import {
-  LineChart,
-  BarChart,
-  Bar,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer
-} from 'recharts'
-import { Calendar, ChevronDown, DollarSign, Package, ShoppingCart, TrendingUp, Users } from 'lucide-react'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { Book, OrderStatisticResponse } from '@/types'
+import { getTotalUserApi } from '@/apis/auth.api'
+import { countBookApi, getTopBookApi } from '@/apis/book.api'
 import { dashBoardApi, getOrderStatisticApi } from '@/apis/order.api'
+import { Book, OrderStatisticResponse } from '@/types'
 import { formatMoney } from '@/utils'
 import { OrderState } from '@/utils/constant'
+import { Book as BookIcon, DollarSign, Package, ShoppingCart, User } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import DatePicker from 'react-datepicker'
-import { getTopBookApi } from '@/apis/book.api'
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Legend,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis
+} from 'recharts'
 
 // Dữ liệu mẫu
-const revenueData = [
-  { name: 'T1', revenue: 4000, orders: 240, visitors: 2400 },
-  { name: 'T2', revenue: 3000, orders: 198, visitors: 2210 },
-  { name: 'T3', revenue: 2000, orders: 120, visitors: 2290 },
-  { name: 'T4', revenue: 2780, orders: 168, visitors: 2000 },
-  { name: 'T5', revenue: 1890, orders: 115, visitors: 2181 },
-  { name: 'T6', revenue: 2390, orders: 145, visitors: 2500 },
-  { name: 'T7', revenue: 3490, orders: 210, visitors: 2800 },
-  { name: 'T8', revenue: 3490, orders: 210, visitors: 2800 },
-  { name: 'T9', revenue: 3490, orders: 210, visitors: 2800 },
-  { name: 'T10', revenue: 5490, orders: 300, visitors: 3800 },
-  { name: 'T11', revenue: 4490, orders: 270, visitors: 3200 },
-  { name: 'T12', revenue: 6490, orders: 350, visitors: 4100 }
-]
-
-const productPerformance = [
-  { id: 1, name: 'Áo Thun Nam', stock: 120, sold: 98, revenue: 5880000, category: 'Thời trang nam' },
-  { id: 2, name: 'Váy Đầm Nữ', stock: 85, sold: 72, revenue: 8640000, category: 'Thời trang nữ' },
-  { id: 3, name: 'Điện Thoại XYZ', stock: 35, sold: 28, revenue: 140000000, category: 'Điện tử' },
-  { id: 4, name: 'Tai Nghe Bluetooth', stock: 150, sold: 130, revenue: 9100000, category: 'Phụ kiện' },
-  { id: 5, name: 'Bàn Làm Việc', stock: 30, sold: 18, revenue: 12600000, category: 'Nhà cửa' }
-]
 
 const Dashboard = () => {
   const [selectedYear, setSelectedYear] = useState<Date | null>(new Date())
   const [data, setData] = useState<OrderStatisticResponse[]>([])
   const [topBooks, setTopBooks] = useState<Book[]>([])
+  const [totalProduct, setTotalProduct] = useState(0) // Dữ liệu doanh thu mẫu
+  const [totalUser, setTotalUser] = useState(0) // Dữ liệu doanh thu mẫu
   // Định dạng số tiền
   const [orderCount, setOrderCount] = useState<{ [key in OrderState]: number }>({
     Pending: 0,
@@ -79,8 +59,22 @@ const Dashboard = () => {
       setTopBooks(res.data.items)
     }
   }
+  const getTotalProduct = async () => {
+    const res = await countBookApi()
+    if (res.code === 0) {
+      setTotalProduct(res.data)
+    }
+  }
+  const getTotalUser = async () => {
+    const res = await getTotalUserApi()
+    if (res.code === 0) {
+      setTotalUser(res.data)
+    }
+  }
   useEffect(() => {
     getOrder()
+    getTotalUser()
+    getTotalProduct()
   }, [])
   useEffect(() => {
     getTopBook()
@@ -91,9 +85,6 @@ const Dashboard = () => {
   const totalRevenue = data.reduce((sub, item) => sub + item.totalRevenue, 0)
 
   const totalOrders = data.reduce((sub, item) => sub + item.totalOrders, 0)
-
-  const totalVisitors = revenueData.reduce((sum, item) => sum + item.visitors, 0)
-  const conversionRate = ((totalOrders / totalVisitors) * 100).toFixed(2)
 
   return (
     <div className='flex flex-col min-h-screen bg-gray-50'>
@@ -140,28 +131,28 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* <div className='bg-white rounded-lg shadow-md p-4 border-l-4 border-green-500'>
+          <div className='bg-white rounded-lg shadow-md p-4 border-l-4 border-green-500'>
             <div className='flex justify-between items-start'>
               <div>
-                <p className='text-sm text-gray-500 mb-1'>Lượt Truy Cập</p>
-                <h3 className='text-xl font-bold text-gray-800'>{totalVisitors}</h3>
-                <p className='text-xs text-green-600 mt-1'>+15% so với tháng trước</p>
+                <p className='text-sm text-gray-500 mb-1'>Sản phẩm</p>
+                <h3 className='text-xl font-bold text-gray-800'>{totalProduct}</h3>
+                {/* <p className='text-xs text-green-600 mt-1'>+15% so với tháng trước</p> */}
               </div>
               <div className='bg-green-100 p-3 rounded-full'>
-                <Users size={20} className='text-green-600' />
+                <BookIcon size={20} className='text-green-600' />
               </div>
             </div>
-          </div> */}
+          </div>
 
           <div className='bg-white rounded-lg shadow-md p-4 border-l-4 border-purple-500'>
             <div className='flex justify-between items-start'>
               <div>
-                <p className='text-sm text-gray-500 mb-1'>Tỷ Lệ Chuyển Đổi</p>
-                <h3 className='text-xl font-bold text-gray-800'>{conversionRate}%</h3>
+                <p className='text-sm text-gray-500 mb-1'>Người dùng</p>
+                <h3 className='text-xl font-bold text-gray-800'>{totalUser}</h3>
                 {/* <p className='text-xs text-green-600 mt-1'>+2% so với tháng trước</p> */}
               </div>
               <div className='bg-purple-100 p-3 rounded-full'>
-                <TrendingUp size={20} className='text-purple-600' />
+                <User size={20} className='text-purple-600' />
               </div>
             </div>
           </div>

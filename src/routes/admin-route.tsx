@@ -15,25 +15,31 @@ import UserPage from '@/pages/Admin/UserPage'
 import VoucherPage from '@/pages/Admin/VoucherPage'
 import VoucherCreator from '@/pages/Admin/VoucherPage/VoucherEdit'
 import { RouteObject } from 'react-router-dom'
+import AuthorizeRoute from './AuthorizeRoute'
 
 export const adminRoutes: RouteObject = {
   path: '/admin',
   element: <AdminLayout />,
   children: [
-    { index: true, element: <Dashboard /> },
-    { path: 'book', element: <BookPage /> },
-    { path: 'book-edit', element: <BookEdit /> },
-    { path: 'author', element: <AuthorPage /> },
-    { path: 'author-edit', element: <AuthorEdit /> },
-    { path: 'category', element: <CategoryPage /> },
-    { path: 'order', element: <OrderPage /> },
-    { path: 'user', element: <UserPage /> },
-    { path: 'post', element: <PostPage /> },
-    { path: 'post-edit', element: <PostEdit /> },
-    { path: 'tag-edit', element: <TagEdit /> },
-    { path: 'tag', element: <TagPage /> },
-    { path: 'order/:orderId', element: <OrderDetailAdmin /> },
-    { path: 'voucher', element: <VoucherPage /> },
-    { path: 'voucher-edit', element: <VoucherCreator /> }
+    {
+      element: <AuthorizeRoute />,
+      children: [
+        { index: true, element: <Dashboard /> },
+        { path: 'book', element: <BookPage /> },
+        { path: 'book-edit', element: <BookEdit /> },
+        { path: 'author', element: <AuthorPage /> },
+        { path: 'author-edit', element: <AuthorEdit /> },
+        { path: 'category', element: <CategoryPage /> },
+        { path: 'order', element: <OrderPage /> },
+        { path: 'user', element: <UserPage /> },
+        { path: 'post', element: <PostPage /> },
+        { path: 'post-edit', element: <PostEdit /> },
+        { path: 'tag-edit', element: <TagEdit /> },
+        { path: 'tag', element: <TagPage /> },
+        { path: 'order/:orderId', element: <OrderDetailAdmin /> },
+        { path: 'voucher', element: <VoucherPage /> },
+        { path: 'voucher-edit', element: <VoucherCreator /> }
+      ]
+    }
   ]
 }

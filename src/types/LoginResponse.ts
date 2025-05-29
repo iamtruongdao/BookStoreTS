@@ -2,7 +2,7 @@ import { UserResponse } from '@/types'
 
 export interface LoginResponse {
   message: string
-  token: object
+  token: { accessToken: string }
   userAccount: UserResponse
   roles: string[]
 }

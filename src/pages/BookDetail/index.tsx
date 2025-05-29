@@ -1,12 +1,11 @@
 import { getBookApi, getBookFilterApi } from '@/apis/book.api'
+import BookInfo from '@/components/BookInfo'
 import Breadscrumb from '@/components/Breadscrumb'
 import { useAppDispatch } from '@/hooks'
-import BookInfo from '@/components/BookInfo'
 import BookDescription from '@/pages/BookDetail/BookDescription'
 import { BookSection } from '@/pages/Home/BookSection'
 import { setLoading } from '@/redux/slice/appSlice'
 import { Book } from '@/types'
-import _ from 'lodash'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
@@ -35,10 +34,9 @@ const BookDetail = () => {
   const getBook = async () => {
     dispatch(setLoading(true))
     const res = await getBookApi(id)
-    // await new Promise((resolve) => setTimeout(resolve, 2000))
     if (res.code === 0) {
       setBook(res.data)
-      const response = await getBookFilterApi({ pageSize: '11', pageNumber: '1', cate: res.data.category[0].id })
+      const response = await getBookFilterApi({ pageSize: '11', pageNumber: '1', cate: res.data.category[0].slug })
       if (response.code === 0) {
         const filteredBooks = response.data.items.filter((item: Book) => item.slug !== res.data.slug)
         setRelatedBooks(filteredBooks)
@@ -55,7 +53,7 @@ const BookDetail = () => {
       <div className='text-sm p-4 text-gray-600  bg-green-50'>
         <Breadscrumb
           breadcrumb={
-            _.every(book, (value) => !_.isNil(value) && value !== '') && id
+            book.category.length > 0 && id
               ? { slug: book.category[0].slug, name: book.category[0].name, [id]: book.productName }
               : {}
           }

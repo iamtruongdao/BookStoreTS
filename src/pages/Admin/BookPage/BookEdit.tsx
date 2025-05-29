@@ -26,7 +26,7 @@ export default function BookEdit() {
   const navigate = useNavigate()
   const [loaded, setLoaded] = useState(false)
   useEffect(() => {
-    setTimeout(() => setLoaded(true), 300)
+    setTimeout(() => setLoaded(true), 500)
   }, [])
   const [book, setBook] = useState<Book>(
     location.state || {
@@ -62,7 +62,6 @@ export default function BookEdit() {
   }
   const handleChange = debounce((e: ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked } = e.target
-    console.log(checked, name)
     if (name === 'cat') {
       setBook({
         ...book,
@@ -92,6 +91,8 @@ export default function BookEdit() {
     }
   }
   const handleSubmit = async () => {
+    console.log(book)
+
     try {
       setIsLoading(true)
       const res = location.state ? await updateBookApi(book) : await createBookApi(book)
@@ -118,7 +119,7 @@ export default function BookEdit() {
         toast.success(location.state ? 'Cập nhật thành công!' : 'Tạo mới thành công!')
         setTimeout(() => {
           navigate('/admin/book') // nếu bạn muốn chuyển trang thì bật dòng này
-        }, 500)
+        }, 300)
       } else {
         toast.error(location.state ? 'Cập nhật thất bại!' : 'Tạo mới thất bại!')
       }

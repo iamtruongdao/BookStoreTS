@@ -1,3 +1,5 @@
+import { Discount, DiscountType } from '@/types'
+
 export const formatMoney = (amount?: number) => {
   return Intl.NumberFormat('vi-VN', {
     style: 'currency',
@@ -43,4 +45,10 @@ export const formatDate = (date: string): string => {
   const year = parsedDate.getFullYear()
 
   return `${hours}:${minutes} - ${day}/${month}/${year}`
+}
+export const formatDiscountInfo = (discount: Discount) => {
+  const valueText =
+    discount.type === DiscountType.Percentage ? `${discount.value}%` : `${discount.value.toLocaleString('vi-VN')}đ`
+
+  return `${discount.name}: ${valueText}`
 }

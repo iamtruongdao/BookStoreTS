@@ -5,14 +5,15 @@ import { NotificationType } from '@/types'
 import * as signalR from '@microsoft/signalr'
 import Cookies from 'js-cookie'
 import { Bell, X } from 'lucide-react'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import { Alert, AlertDescription } from '../ui/alert'
 
 const ShopeeNotification: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [hasNewNotification, setHasNewNotification] = useState(false)
   const [notifications, setNotification] = useState<NotificationType[]>([])
   const connectionRef = useRef<signalR.HubConnection | null>(null)
-
+  const { isLogin } = useAppSelector((state) => state.user)
   // Danh sách thông báo
 
   // Hiệu ứng bounce cho biểu tượng thông báo khi có thông báo mới
@@ -23,8 +24,10 @@ const ShopeeNotification: React.FC = () => {
         setNotification(res.data)
       }
     }
-    fetchNotifications()
-  }, [])
+    if (isLogin) {
+      // fetchNotifications()
+    }
+  }, [isLogin])
   useEffect(() => {
     const buildConnection = () =>
       new signalR.HubConnectionBuilder()
@@ -81,9 +84,7 @@ const ShopeeNotification: React.FC = () => {
         }
       }
     }
-
     startConnection()
-
     return () => {
       connectionRef.current?.stop()
     }
@@ -137,21 +138,25 @@ const ShopeeNotification: React.FC = () => {
           </div>
 
           <div className='divide-y divide-gray-100'>
-            {notifications.map((notification) => (
-              <div
-                key={notification.id}
-                className={`p-3 hover:bg-gray-50 cursor-pointer ${!notification.isRead ? 'bg-blue-50/40' : ''}`}
-              >
-                <div className='flex gap-3'>
-                  <div className='flex-1'>
-                    {/* <div className='font-medium text-sm mb-1'>{notification.title}</div> */}
-                    <div>{notification.content}</div>
+            {!isLogin ? (
+              <div className='p-2'>Vui lòng đăng nhập để nhận thông báo</div>
+            ) : (
+              notifications.map((notification) => (
+                <div
+                  key={notification.id}
+                  className={`p-3 hover:bg-gray-50 cursor-pointer ${!notification.isRead ? 'bg-blue-50/40' : ''}`}
+                >
+                  <div className='flex gap-3'>
+                    <div className='flex-1'>
+                      {/* <div className='font-medium text-sm mb-1'>{notification.title}</div> */}
+                      <div>{notification.content}</div>
 
-                    {/* Images */}
+                      {/* Images */}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
 
           <div className='p-2 text-center border-t border-gray-200'>

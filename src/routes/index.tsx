@@ -16,8 +16,10 @@ import Account from '@/pages/Profile/Account'
 import ResetPassword from '@/pages/Profile/ResetPassword'
 import { BreadType, RouteType } from '@/types'
 import { createBrowserRouter } from 'react-router-dom'
-import { adminRoutes } from './admin-route'
-import { privateRoute } from './private-route'
+import { adminRoutes } from '@/routes/admin-route'
+import { privateRoute } from '@/routes/private-route'
+import UserVouchers from '@/pages/UserVoucher'
+import UnauthorizedPage from '@/pages/Unauthorize'
 
 const router = createBrowserRouter([
   {
@@ -57,6 +59,9 @@ const router = createBrowserRouter([
           breadcrumb: (match, paramName) => {
             const { id } = match.params
             const arr: BreadType[] = []
+            console.log(paramName)
+            console.log(id)
+
             if (paramName) {
               arr.push(
                 { name: paramName.name, pathname: `/category/${paramName.slug}` },
@@ -103,7 +108,8 @@ const router = createBrowserRouter([
         element: <Profile />,
         children: [
           { index: true, element: <Account /> },
-          { path: 'password', element: <ResetPassword /> }
+          { path: 'password', element: <ResetPassword /> },
+          { path: 'voucher', element: <UserVouchers /> }
         ]
       },
       { path: 'category/:category', element: <BookList /> },
@@ -150,6 +156,7 @@ const router = createBrowserRouter([
       { path: 'discount', element: <DiscountPage /> }
     ]
   },
+  { path: 'unauthorized', element: <UnauthorizedPage /> },
   ...privateRoute,
   adminRoutes
 ])

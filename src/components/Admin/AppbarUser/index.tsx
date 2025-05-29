@@ -45,15 +45,19 @@ export function AppbarUser({
     // Handle logout logic here (e.g., API call, state update)
     // For example:
     try {
-      dispatch(setLoading(true))
-      await dispatch(logoutAction()) // Đảm bảo logout xong mới chuyển trang
-      await new Promise((resolve) => setTimeout(resolve, 100)) // Giả lập thời gian xử lý logout
-      // Sau khi logout thành công, chuyển trang luôn
-      navigate('/admin/login', { replace: true }) // dùng replace để không lưu history
+      await dispatch(logoutAction()).unwrap()
+
+      localStorage.removeItem('token')
+
+      navigate('/login', { replace: true }) // Chuyển trang ngay khi xong
     } catch (error) {
       console.error('Logout failed:', error)
-    } finally {
-      dispatch(setLoading(false)) // Ẩn loading nếu cần trong component khác
+
+      // Hiện thông báo lỗi cho người dùng nếu cần
+      // toast.error('Đăng xuất thất bại. Vui lòng thử lại.')
+
+      // TẮT loading nếu có lỗi
+      dispatch(setLoading(false))
     }
 
     // Redirect to login page or show a success message

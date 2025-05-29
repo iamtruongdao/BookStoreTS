@@ -7,9 +7,9 @@ import { useEffect } from 'react'
 import { ColorRing } from 'react-loader-spinner'
 import { RouterProvider } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
-import { getUserAction } from './redux/slice/userSlice'
+import { getUserAction } from '@/redux/slice/userSlice'
 import 'react-datepicker/dist/react-datepicker.css'
-import { Role } from './utils/constant'
+import { Role } from '@/utils/constant'
 function App() {
   const {
     isLogin,
@@ -18,24 +18,20 @@ function App() {
   const { isGlobalLoading } = useAppSelector((state) => state.app)
   const dispatch = useAppDispatch()
   useEffect(() => {
-    const fetchUser = async () => {
-      if (isLogin) {
-        try {
-          dispatch(setLoading(true)) // Bật loading trước khi gọi API
-          dispatch(getUserAction()) // Chờ API hoàn thành
-          // if (roles.includes(Role.User)) {
-          dispatch(getCartAction(id))
-          // }
-        } catch (error) {
-          console.log(error)
-        } finally {
-          dispatch(setLoading(false))
-        }
-      }
+    if (isLogin) {
+      dispatch(setLoading(true))
+      dispatch(getUserAction())
+        .unwrap()
+        .finally(() => dispatch(setLoading(false)))
     }
-    fetchUser()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLogin])
+
+  // 2. Khi roles đã có thì gọi getCart
+  useEffect(() => {
+    if (isLogin && roles.includes(Role.User)) {
+      dispatch(getCartAction(id))
+    }
+  }, [isLogin, roles])
   return (
     <>
       <div className={`${isGlobalLoading ? 'overflow-auto  hide-scrollbar' : ''} h-screen`}>

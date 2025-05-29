@@ -26,3 +26,6 @@ export const getWaitPublishBookApi = () => {
 export const getTopBookApi = (params: Record<string, string>) => {
   return axios.get<void, BackendResponse<Paginate<Book>>>(`products/top-product`, { params })
 }
+export const countBookApi = () => {
+  return axios.get<void, BackendResponse<number>>(`products/count`)
+}
