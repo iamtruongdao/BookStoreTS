@@ -15,7 +15,7 @@ const DiscountPage: React.FC = () => {
   const [discounts, setDiscounts] = useState<Discount[]>([])
   const [totalPages, setTotalPages] = useState<number>(1)
   const [currentPage, setCurrentPage] = useState<number>(1)
-  const [savedCoupons, setSavedCoupons] = useState<Set<string>>(new Set())
+
   const getDiscounts = async () => {
     const res = await getDiscountFilter({ pageNumber: currentPage.toString(), pageSize: '5' })
     if (res.code === 0) {
@@ -168,16 +168,10 @@ const DiscountPage: React.FC = () => {
 
                       <button
                         onClick={() => handleSave(discount.id)}
-                        className={`mt-3 px-4 py-2 rounded-md text-sm font-medium transition-all flex items-center gap-2 active:scale-95 ${
-                          discount.id && savedCoupons.has(discount.id)
-                            ? 'bg-pink-500 text-white hover:bg-pink-600'
-                            : 'bg-orange-500 text-white hover:bg-orange-600'
-                        }`}
+                        className={`mt-3 px-4 py-2 rounded-md text-sm font-medium transition-all flex items-center gap-2 active:scale-95 ${'bg-orange-500 text-white hover:bg-orange-600'}`}
                       >
-                        <Heart
-                          className={`w-4 h-4 ${discount.id && savedCoupons.has(discount.id) ? 'fill-current' : ''}`}
-                        />
-                        {discount.id && savedCoupons.has(discount.id) ? 'Đã lưu' : 'Lưu voucher'}
+                        <Heart className={`w-4 h-4 `} />
+                        Lưu voucher
                       </button>
                     </div>
                   </div>

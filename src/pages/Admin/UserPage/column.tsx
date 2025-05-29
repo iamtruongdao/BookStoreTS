@@ -1,10 +1,10 @@
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { Author, UserResponse } from '@/types'
+import { UserResponse } from '@/types'
 import { ColumnDef, Row } from '@tanstack/react-table'
 import { BookOpen, MoreVertical, PencilLine, Trash2 } from 'lucide-react'
 import { useState } from 'react'
-import { DeleteAuthorDialog } from './DeleteAuthorDialog'
+
 import { Switch } from '@/components/ui/switch'
 interface ActionsProps {
   row: Row<UserResponse>
@@ -13,20 +13,11 @@ interface ActionsProps {
   onViewDetail: (author: UserResponse) => void
   onDelete: (author: UserResponse) => void
 }
-export function Actions({ row, onViewDetail, onDelete, onEdit, showDetail = true }: ActionsProps) {
+export function Actions({ row, onViewDetail, onEdit, showDetail = true }: ActionsProps) {
   const [menuOpen, setMenuOpen] = useState(false)
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
-
-  const handleDelete = (author: Author) => {
-    onDelete(author)
-    setShowDeleteDialog(false)
-  }
 
   const handleClickDelete = () => {
     setMenuOpen(false) // đóng menu trước
-    setTimeout(() => {
-      setShowDeleteDialog(true) // mở dialog sau
-    }, 100)
   }
 
   return (
@@ -61,13 +52,6 @@ export function Actions({ row, onViewDetail, onDelete, onEdit, showDetail = true
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-
-      <DeleteAuthorDialog
-        author={row.original}
-        open={showDeleteDialog}
-        onOpenChange={setShowDeleteDialog}
-        onConfirm={handleDelete}
-      />
     </>
   )
 }

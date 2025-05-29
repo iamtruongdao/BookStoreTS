@@ -17,20 +17,21 @@ import { CancelOrderDialog } from './CancelOrderDialog'
 
 // Tạo dữ liệu mẫu
 const sampleOrder: Order = {
-  id: 'ORD-12345',
-  userId: 'USR-98765',
+  id: '',
+  userId: '',
   orderCheckout: {
-    totalPrice: 2480000,
-    totalApplyDiscount: 2290000,
-    feeShip: 30000
+    totalPrice: 0,
+    totalApplyDiscount: 0,
+    feeShip: 0,
+    voucherDiscount: 0
   },
   orderAddress: {
-    fullName: 'Nguyễn Văn A',
-    phoneNumber: '0901234567',
-    address: '123 Đường ABC',
-    street: 'Đường ABC',
-    district: 'Quận 1',
-    city: 'TP. Hồ Chí Minh'
+    fullName: '',
+    phoneNumber: '',
+    address: '',
+    street: '',
+    district: '',
+    city: ''
   },
   orderItem: [
     {
@@ -61,10 +62,11 @@ const sampleOrder: Order = {
   orderStatus: OrderState.WaitingPickup,
   orderPayment: PAYMENT.VNPAY,
   paymentStatus: PaymentStatus.WaitingPaid,
-  orderCode: 'OC-98765',
-  trackingNumber: 'TN-45678',
-  linkPayment: 'https://payment.example.com/link',
-  createdAt: new Date('2025-05-01T08:30:00')
+  orderCode: '',
+  trackingNumber: '',
+  linkPayment: '',
+  createdAt: new Date('2025-05-01T08:30:00'),
+  deleveredAt: new Date('2025-05-01T08:30:00')
 }
 
 // Lấy icon cho phương thức thanh toán

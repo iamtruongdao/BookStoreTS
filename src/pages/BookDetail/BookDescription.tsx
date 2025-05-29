@@ -1,11 +1,11 @@
-import React, { FC, useEffect, useState } from 'react'
-import { Card, CardContent } from '@/components/ui/card'
+import { getTagBySlugApi } from '@/apis/tag.api'
+import NewsItem from '@/components/NewsItem'
 import { Badge } from '@/components/ui/badge'
+import { Card, CardContent } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Book, Post } from '@/types'
-import NewsItem from '@/components/NewsItem'
-import { getTagBySlugApi } from '@/apis/tag.api'
 import { formatDate } from '@/utils'
+import { FC, useEffect, useState } from 'react'
 
 type BookDescriptionProps = {
   bookDetails: Book

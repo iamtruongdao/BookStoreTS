@@ -23,7 +23,6 @@ const OrderHistory: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [totalPages, setTotalPages] = useState<number>(0)
-  const [filteredOrders, setFilteredOrders] = useState<Order[]>([])
 
   const fetchOrder = async () => {
     setIsLoading(true)
@@ -36,7 +35,7 @@ const OrderHistory: React.FC = () => {
       })
       if (res.code === 0) {
         setOrders(res.data.items)
-        setFilteredOrders(res.data.items)
+
         setTotalPages(res.data.totalPages)
         window.scrollTo({ top: 0, behavior: 'smooth' })
       }
@@ -57,18 +56,6 @@ const OrderHistory: React.FC = () => {
   useEffect(() => {
     fetchOrder()
   }, [currentPage, selectedTab])
-
-  // useEffect(() => {
-  //   if (selectedTab === 'all') {
-  //     setFilteredOrders(orders)
-  //   } else if (selectedTab === 'waiting_payment') {
-  //     // Filter orders that are waiting for payment
-  //     setFilteredOrders(orders.filter((order) => order.paymentStatus === PaymentStatus.WaitingPaid))
-  //   } else {
-  //     // Filter by order status
-  //     setFilteredOrders(orders.filter((order) => order.orderStatus === selectedTab))
-  //   }
-  // }, [selectedTab, orders])
 
   // Helper function to determine if an order needs payment
   const needsPayment = (order: Order) => {

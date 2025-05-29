@@ -1,8 +1,6 @@
-import React from 'react'
-import { Facebook, Instagram, ShoppingBag, MessageCircleHeart } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import logo from '@/assets/logo.webp'
+import { Facebook, Instagram, MessageCircleHeart, ShoppingBag } from 'lucide-react'
 const Footer = () => {
   return (
     <div className='flex flex-col w-full'>

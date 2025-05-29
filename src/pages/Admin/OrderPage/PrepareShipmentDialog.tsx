@@ -61,7 +61,7 @@ export default function PrepareShipmentDialog({ open, onOpenChange, onConfirm, o
     await onConfirm()
   }
 
-  const handleDateChange = (newDate: Date) => {
+  const handleDateChange = (newDate: Date | null) => {
     if (!newDate) return
     // Nếu chọn kiểu range: newDate sẽ có { from, to }
     // Nếu chỉ chọn 1 ngày (mode: 'single')

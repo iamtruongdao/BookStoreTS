@@ -29,84 +29,8 @@ interface BookSectionProps {
   books: Book[]
   viewMoreLink: string
 }
-const popularBooks: Book[] = [
-  {
-    id: '8',
-    productName: 'NGƯỜI GIÀU CÓ NHẤT THÀNH BABYLON',
-    avatar: 'https://bizweb.dktcdn.net/100/363/455/products/grasshopper-sat-thu-bao-thu-01.jpg?v=1740450193993',
-    discountPrice: 88000,
-    productPrice: 110000,
-    slug: 'nguoi-giau-co-nhat-thanh-babylon',
-    discount: 20,
-    productQuantity: 100,
-    productDescription: 'Cuốn sách tài chính kinh điển',
-    authorName: 'George S. Clason',
-    author: 'George S. Clason',
-    category: [],
-    isPublic: true
-  },
-  {
-    id: '9',
-    productName: 'ĐẮC NHÂN TÂM',
-    avatar: 'https://bizweb.dktcdn.net/100/363/455/products/grasshopper-sat-thu-bao-thu-01.jpg?v=1740450193993',
-    discountPrice: 76800,
-    productPrice: 96000,
-    slug: 'dac-nhan-tam',
-    discount: 20,
-    productQuantity: 150,
-    productDescription: 'Cuốn sách giúp bạn hiểu về nghệ thuật giao tiếp',
-    authorName: 'Dale Carnegie',
-    author: 'Dale Carnegie',
-    category: [],
-    isPublic: true
-  },
-  {
-    id: '10',
-    productName: 'THÓI QUEN NGUYÊN TỬ',
-    avatar: 'https://bizweb.dktcdn.net/100/363/455/products/grasshopper-sat-thu-bao-thu-01.jpg?v=1740450193993',
-    discountPrice: 115200,
-    productPrice: 144000,
-    slug: 'thoi-quen-nguyen-tu',
-    discount: 20,
-    productQuantity: 120,
-    productDescription: 'Xây dựng thói quen tốt dễ dàng hơn bao giờ hết',
-    authorName: 'James Clear',
-    author: 'James Clear',
-    category: [],
-    isPublic: true
-  },
-  {
-    id: '11',
-    productName: 'NGHĨ GIÀU LÀM GIÀU',
-    avatar: 'https://bizweb.dktcdn.net/100/363/455/products/grasshopper-sat-thu-bao-thu-01.jpg?v=1740450193993',
-    discountPrice: 98000,
-    productPrice: 120000,
-    slug: 'nghi-giau-lam-giau',
-    discount: 18,
-    productQuantity: 130,
-    productDescription: 'Bí quyết tư duy của những người thành công',
-    authorName: 'Napoleon Hill',
-    author: 'Napoleon Hill',
-    category: [],
-    isPublic: true
-  },
-  {
-    id: '12',
-    productName: 'NGƯỜI BÁN HÀNG VĨ ĐẠI NHẤT THẾ GIỚI',
-    avatar: 'https://bizweb.dktcdn.net/100/363/455/products/grasshopper-sat-thu-bao-thu-01.jpg?v=1740450193993',
-    discountPrice: 85000,
-    productPrice: 105000,
-    slug: 'nguoi-ban-hang-vi-dai-nhat-the-gioi',
-    discount: 19,
-    productQuantity: 140,
-    productDescription: 'Những nguyên tắc thành công trong bán hàng',
-    authorName: 'Og Mandino',
-    author: 'Og Mandino',
-    category: [],
-    isPublic: true
-  }
-]
-export function BookSection({ title = 'Sách mới', books = popularBooks, viewMoreLink = 's' }: BookSectionProps) {
+
+export function BookSection({ title = 'Sách mới', books, viewMoreLink = 's' }: BookSectionProps) {
   return (
     <div className='!p-6'>
       <div className='border-t-2 border-green-600 !pt-4 !mb-12'>

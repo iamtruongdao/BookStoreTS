@@ -1,33 +1,14 @@
 'use client'
 
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CircleUser,
-  CreditCard,
-  KeyRound,
-  LogOut,
-  Newspaper,
-  Sparkles
-} from 'lucide-react'
+import { ChevronsUpDown, LogOut } from 'lucide-react'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
-import { useSidebar } from '@/components/ui/sidebar'
-import { Link, useNavigate } from 'react-router-dom'
-import { setLoading } from '@/redux/slice/appSlice'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { useAppDispatch } from '@/hooks'
+import { setLoading } from '@/redux/slice/appSlice'
 import { logoutAction } from '@/redux/slice/userSlice'
+import { useNavigate } from 'react-router-dom'
 
 export function AppbarUser({
   user

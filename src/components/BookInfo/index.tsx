@@ -24,18 +24,13 @@ const BookInfo: FC<BookInfoProp> = ({ book, hideDescription = false }) => {
   const [isExpanded, setIsExpanded] = useState(false)
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
-  const availableStock = 98
 
   const handleQuantityIncrease = () => {
-    if (quantity < availableStock) {
-      setQuantity(quantity + 1)
-    }
+    setQuantity(quantity + 1)
   }
 
   const handleQuantityDecrease = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1)
-    }
+    setQuantity(quantity - 1)
   }
   const handleAddToCart = async (bookId: string) => {
     setIsAddToCartLoading(true)
