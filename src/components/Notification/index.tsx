@@ -6,7 +6,6 @@ import * as signalR from '@microsoft/signalr'
 import Cookies from 'js-cookie'
 import { Bell, X } from 'lucide-react'
 import React, { useEffect, useRef, useState } from 'react'
-import { Alert, AlertDescription } from '../ui/alert'
 
 const ShopeeNotification: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -25,14 +24,14 @@ const ShopeeNotification: React.FC = () => {
       }
     }
     if (isLogin) {
-      // fetchNotifications()
+      fetchNotifications()
     }
   }, [isLogin])
   useEffect(() => {
     const buildConnection = () =>
       new signalR.HubConnectionBuilder()
-        .withUrl('https://localhost:7091/notification', {
-          accessTokenFactory: () => Cookies.get('act')!
+        .withUrl(`${import.meta.env.VITE_NOTIFY_URL}/notification`, {
+          accessTokenFactory: () => Cookies.get('act')! ?? Cookies.get('actk')!
         })
         .configureLogging(signalR.LogLevel.Information)
         .withAutomaticReconnect()
