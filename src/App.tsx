@@ -1,15 +1,15 @@
 import { useAppDispatch, useAppSelector } from '@/hooks'
 import { setLoading } from '@/redux/slice/appSlice'
 import { getCartAction } from '@/redux/slice/cartSlice'
+import { getUserAction } from '@/redux/slice/userSlice'
 import router from '@/routes'
+import { Role } from '@/utils/constant'
 import { AnimatePresence } from 'framer-motion'
 import { useEffect } from 'react'
+import 'react-datepicker/dist/react-datepicker.css'
 import { ColorRing } from 'react-loader-spinner'
 import { RouterProvider } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
-import { getUserAction } from '@/redux/slice/userSlice'
-import 'react-datepicker/dist/react-datepicker.css'
-import { Role } from '@/utils/constant'
 function App() {
   const {
     isLogin,
@@ -31,7 +31,7 @@ function App() {
     if (isLogin && roles.includes(Role.User)) {
       dispatch(getCartAction(id))
     }
-  }, [roles.length])
+  }, [roles.length, isLogin])
   return (
     <>
       <div className={`${isGlobalLoading ? 'overflow-auto  hide-scrollbar' : ''} h-screen`}>

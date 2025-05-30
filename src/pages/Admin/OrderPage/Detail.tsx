@@ -278,7 +278,7 @@ const OrderDetailAdmin: React.FC = () => {
                     <p className='text-sm text-gray-500'>
                       {order.orderStatus === OrderState.WaitingPickup && !order.trackingNumber
                         ? 'Đang chuẩn bị hàng'
-                        : order.orderStatus !== OrderState.Cancel
+                        : order.orderStatus === OrderState.Cancel
                           ? 'Đơn hàng đã bị hủy không thể chuẩn bị hàng'
                           : 'Đơn hàng đã được giao cho nhà vận chuyển'}
                     </p>
@@ -371,15 +371,20 @@ const OrderDetailAdmin: React.FC = () => {
                 <div>
                   <p className='text-sm text-gray-500'>Tổng tiền hàng</p>
                   <p className='text-sm text-gray-500'>Phí vận chuyển</p>
-                  <p className='text-sm text-gray-500'>Giảm giá</p>
+                  <p className='text-sm text-gray-500'>Giảm giá từ sản phẩm</p>
+                  <p className='text-sm text-gray-500'>Voucher</p>
                   <p className='font-medium mt-2'>Thành tiền</p>
                 </div>
                 <div className='text-right'>
                   <p className='text-sm text-gray-500'>{formatCurrency(order.orderCheckout.totalPrice)}</p>
                   <p className='text-sm text-gray-500'>{formatCurrency(order.orderCheckout.feeShip)}</p>
                   <p className='text-sm text-gray-500'>
-                    {formatCurrency(order.orderCheckout.totalPrice - order.orderCheckout.totalApplyDiscount)}
+                    {formatCurrency(
+                      order.orderCheckout.totalPrice -
+                        (order.orderCheckout.totalApplyDiscount + order.orderCheckout?.voucherDiscount)
+                    )}
                   </p>
+                  <p className='text-sm text-gray-500'>{formatCurrency(order.orderCheckout?.voucherDiscount)}</p>
                   <p className='font-medium mt-2'>
                     {formatCurrency(order.orderCheckout.totalApplyDiscount + order.orderCheckout.feeShip)}
                   </p>
@@ -494,11 +499,13 @@ const OrderDetailAdmin: React.FC = () => {
                 </div>
                 <div className='flex flex-col space-y-2'>
                   <Button>Lưu ghi chú</Button>
-                  {order.orderStatus !== OrderState.Cancel && order.orderStatus !== OrderState.Delivered && (
-                    <Button className='bg-gray-500' onClick={() => setShowCancelDialog(true)} variant='destructive'>
-                      Hủy đơn hàng
-                    </Button>
-                  )}
+                  {order.orderStatus !== OrderState.Cancel &&
+                    order.orderStatus !== OrderState.Delivered &&
+                    !order?.trackingNumber && (
+                      <Button className='bg-gray-500' onClick={() => setShowCancelDialog(true)} variant='destructive'>
+                        Hủy đơn hàng
+                      </Button>
+                    )}
                 </div>
               </CardContent>
             </Card>

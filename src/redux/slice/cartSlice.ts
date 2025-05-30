@@ -16,7 +16,9 @@ const initialState: Cart = {
 const cartSlice = createSlice({
   name: 'cart',
   initialState,
-  reducers: {},
+  reducers: {
+    resetCart: () => initialState // <-- Đây là action reset
+  },
   extraReducers(builder) {
     builder.addCase(getCartAction.fulfilled, (state, action: PayloadAction<Cart>) => {
       state.id = action.payload.id
@@ -28,3 +30,4 @@ const cartSlice = createSlice({
 })
 
 export default cartSlice.reducer
+export const { resetCart } = cartSlice.actions

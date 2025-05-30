@@ -22,43 +22,55 @@ export function BookCard({ book }: BookCardProps) {
     userInfo: { id }
   } = useAppSelector((state) => state.user)
   const [isLoading, setIsLoading] = useState(false)
+  const [isBuyLoading, setIsBuyLoading] = useState(false)
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const handleAddToCart = async (e: React.MouseEvent, bookId: string) => {
     e.preventDefault()
     e.stopPropagation()
     setIsLoading(true)
-    await new Promise((resolve) => setTimeout(resolve, 1000)) // Simulate loading
-    const res = await addToCartApi({ userId: id, cartItem: { productId: bookId, quantity: 1 } })
-    if (res.code === 0) {
+    try {
+      const res = await addToCartApi({ userId: id, cartItem: { productId: bookId, quantity: 1 } })
+      if (res.code === 0) {
+        dispatch(getCartAction(id))
+        toast.success(
+          <div>
+            Thêm vào giỏ hàng thành công! Xem
+            <span
+              onClick={() => navigate('/cart')}
+              style={{
+                color: 'blue',
+                textDecoration: 'underline',
+                cursor: 'pointer'
+              }}
+            >
+              Giỏ hàng
+            </span>
+            .
+          </div>
+        )
+      }
+    } catch (error) {
+      console.log(error)
+    } finally {
       setIsLoading(false)
-      dispatch(getCartAction(id))
-      toast.success(
-        <div>
-          Thêm vào giỏ hàng thành công! Xem
-          <span
-            onClick={() => navigate('/cart')}
-            style={{
-              color: 'blue',
-              textDecoration: 'underline',
-              cursor: 'pointer'
-            }}
-          >
-            Giỏ hàng
-          </span>
-          .
-        </div>
-      )
     }
   }
 
   const handleBuyNow = async (e: React.MouseEvent, bookId: string) => {
     e.preventDefault()
     e.stopPropagation()
-    const res = await addToCartApi({ userId: id, cartItem: { productId: bookId, quantity: 1 } })
-    if (res.code === 0) {
-      await dispatch(getCartAction(id))
-      navigate('/cart')
+    setIsBuyLoading(true)
+    try {
+      const res = await addToCartApi({ userId: id, cartItem: { productId: bookId, quantity: 1 } })
+      if (res.code === 0) {
+        await dispatch(getCartAction(id))
+        navigate('/cart')
+      }
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsBuyLoading(false)
     }
   }
 
@@ -77,7 +89,13 @@ export function BookCard({ book }: BookCardProps) {
                 className='w-full bg-green-600 hover:bg-green-700 cursor-pointer'
                 onClick={(event) => handleBuyNow(event, book.id)}
               >
-                Mua ngay
+                {isBuyLoading ? (
+                  <span className='flex items-center'>
+                    <span className='animate-spin mr-2 h-4 w-4 border-2 border-green-600 border-t-transparent rounded-full'></span>
+                  </span>
+                ) : (
+                  <span className='flex items-center cursor-pointer'>Mua ngay</span>
+                )}
               </Button>
               <Button
                 variant='outline'

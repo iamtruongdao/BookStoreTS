@@ -1,10 +1,12 @@
 import { GetUser, LoginApi, LogoutApi } from '@/apis/auth.api'
 import { UserResponse } from '@/types'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { resetCart } from '@/redux/slice/cartSlice'
 export const loginAction = createAsyncThunk('user/login', async (data: { email: string; password: string }) => {
   return await LoginApi(data)
 })
-export const logoutAction = createAsyncThunk('user/logout', async () => {
+export const logoutAction = createAsyncThunk('user/logout', async (_, { dispatch }) => {
+  dispatch(resetCart())
   await LogoutApi()
 })
 export const getUserAction = createAsyncThunk('user/get-user', async () => {
@@ -37,7 +39,6 @@ const userSlide = createSlice({
       const expiryDate = new Date()
       expiryDate.setTime(expiryDate.getTime() + 7 * 24 * 60 * 60 * 1000) // 7 days
       document.cookie = `actk=${token}; samesite=none; secure; path=/; expires=${expiryDate.toUTCString()}`
-      document.cookie = `rft=${data.token.refreshToken}; samesite=none; secure; path=/; expires=${expiryDate.toUTCString()}`
     })
     builder.addCase(loginAction.rejected, (state) => {
       state.isLogin = false
@@ -46,7 +47,6 @@ const userSlide = createSlice({
       state.isLogin = false
       state.userInfo = { address: '', email: '', fullName: '', isLocked: false, phoneNumber: '', roles: [], id: '' }
       document.cookie = 'actk=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; samesite=none; secure'
-      document.cookie = 'rft=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; samesite=none; secure'
     })
     builder.addCase(getUserAction.fulfilled, (state, { payload }) => {
       state.isLogin = true

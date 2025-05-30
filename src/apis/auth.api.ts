@@ -13,7 +13,7 @@ export const GetUser = () => {
   return axios.get<void, BackendResponse<UserResponse>>('/auth/get/user')
 }
 export const RefreshToken = () => {
-  return axios.post('/auth/refreshToken')
+  return axios.post<void, BackendResponse<{ accessToken: string; refreshToken: string }>>('/auth/refreshToken')
 }
 export const sendOtpApi = (data: { email: string }) => {
   return axios.post<void, BackendResponse<unknown>>('/auth/send-otp', data)

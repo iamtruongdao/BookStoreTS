@@ -15,7 +15,7 @@ import { formatDiscountInfo, formatMoney } from '@/utils'
 import { PAYMENT } from '@/utils/constant'
 import { formatDate } from 'date-fns'
 import { debounce } from 'lodash'
-import { ChevronDown, ChevronLeft, CreditCard } from 'lucide-react'
+import { ChevronDown, ChevronLeft, CreditCard, Loader2 } from 'lucide-react'
 import { ChangeEvent, useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
@@ -65,6 +65,7 @@ export default function CheckoutPage() {
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [userDiscounts, setUserDiscounts] = useState<UserDiscount[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [loading, setLoading] = useState(false)
   const buildData = (data: CartProduct[]) => {
     return data.map((item) => {
       return {
@@ -296,6 +297,7 @@ export default function CheckoutPage() {
     }
     // Implement order placement logic
     if (paymentMethod === 'vnpay') {
+      setLoading(true)
       const res = await createOrderApi({
         address: {
           address: formData.address,
@@ -314,45 +316,59 @@ export default function CheckoutPage() {
           items: buildData(cartProducts)
         }
       })
-      if (res.code === 0) {
-        const response = await createPaymentApi({
-          amount: orderCheckout.totalApplyDiscount + shippingFee - orderCheckout.voucherDiscount,
-          orderId: res.data.id,
-          description: 'Thanh toan don hang',
-          createdDate: new Date().toISOString()
-        })
-        if (response.code === 0) {
-          console.log(response.data)
-          window.location.href = response.data.url
+      try {
+        if (res.code === 0) {
+          const response = await createPaymentApi({
+            amount: orderCheckout.totalApplyDiscount + shippingFee - orderCheckout.voucherDiscount,
+            orderId: res.data.id,
+            description: 'Thanh toan don hang',
+            createdDate: new Date().toISOString()
+          })
+          if (response.code === 0) {
+            console.log(response.data)
+            window.location.href = response.data.url
+          }
+        } else {
+          toast.error('Đặt hàng thất bại!')
         }
-      } else {
-        toast.error('Đặt hàng thất bại!')
+      } catch (error) {
+        console.log(error)
+      } finally {
+        setLoading(false)
       }
     } else {
       // Handle COD order
-      const res = await createOrderApi({
-        address: {
-          address: formData.address,
-          phoneNumber: formData.phoneNumber,
-          fullName: formData.name,
-          street: wardCode,
-          district: districtId,
-          city: provinceNameMap[provinceId]
-        },
-        orderPayment: PAYMENT.COD,
-        feeShip: shippingFee,
-        checkout: {
-          vouchers: discountCode ? [discountCode] : [],
-          cartId: id,
-          userId: userId,
-          items: buildData(cartProducts)
+      setLoading(true)
+
+      try {
+        const res = await createOrderApi({
+          address: {
+            address: formData.address,
+            phoneNumber: formData.phoneNumber,
+            fullName: formData.name,
+            street: wardCode,
+            district: districtId,
+            city: provinceNameMap[provinceId]
+          },
+          orderPayment: PAYMENT.COD,
+          feeShip: shippingFee,
+          checkout: {
+            vouchers: discountCode ? [discountCode] : [],
+            cartId: id,
+            userId: userId,
+            items: buildData(cartProducts)
+          }
+        })
+        if (res.code === 0) {
+          toast.success('Đặt hàng thành công!')
+          setTimeout(() => {
+            navigate(`/order/${res.data.id}`)
+          }, 100)
         }
-      })
-      if (res.code === 0) {
-        toast.success('Đặt hàng thành công!')
-        setTimeout(() => {
-          navigate(`/order/${res.data.id}`)
-        }, 1000)
+      } catch (error) {
+        console.log(error)
+      } finally {
+        setLoading(false)
       }
     }
   }
@@ -689,8 +705,15 @@ export default function CheckoutPage() {
                         Quay về giỏ hàng
                       </Button>
                     </Link>
-                    <Button className='bg-blue-500 cursor-pointer hover:bg-blue-600' onClick={handlePlaceOrder}>
-                      ĐẶT HÀNG
+                    <Button onClick={handlePlaceOrder} disabled={loading} className='bg-blue-500 hover:bg-blue-600'>
+                      {loading ? (
+                        <>
+                          <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                          Đang xử lý...
+                        </>
+                      ) : (
+                        'ĐẶT HÀNG'
+                      )}
                     </Button>
                   </div>
                 </div>

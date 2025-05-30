@@ -8,12 +8,12 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { AlertCircle, CalendarIcon, CheckCircle, Clock, CreditCard, MapPin, Package, Truck } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 // Import the provided interfaces
+import { cancelOrderApi, getOrderByIdApi } from '@/apis/order.api'
 import { Order } from '@/types'
 import { formatMoney } from '@/utils'
 import { OrderState, PAYMENT, PaymentStatus, statusMap } from '@/utils/constant'
-import { cancelOrderApi, getOrderByIdApi } from '@/apis/order.api'
-import { useParams } from 'react-router-dom'
 import { formatDate } from 'date-fns'
+import { useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
 interface OrderDetailProps {
@@ -103,7 +103,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ order, isLoading = false, onD
     return order.paymentStatus
   }
 
-  // Get payment method display text
+  // Get payment method display <text></text>
   const getPaymentMethodText = (method: PAYMENT): string => {
     const methodMap: Record<PAYMENT, string> = {
       [PAYMENT.COD]: 'Thanh toán khi nhận hàng (COD)',
@@ -592,25 +592,26 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ order, isLoading = false, onD
 
 export default function OrderDetailPage() {
   // State để kiểm soát trạng thái loading
-  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const [orderData, setOrderData] = useState<Order | null>(null)
   const { orderId } = useParams()
   const fetchOrder = async () => {
-    const res = await getOrderByIdApi(orderId!)
-    if (res.code === 0) {
-      setOrderData(res.data)
+    setIsLoading(true)
+    try {
+      const res = await getOrderByIdApi(orderId!)
+      if (res.code === 0) {
+        setOrderData(res.data)
+      }
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsLoading(false)
     }
   }
-  // Giả lập việc tải dữ liệu
-  useEffect(() => {
-    // Giả lập API call
-    setTimeout(() => {
-      // Sample data
-      fetchOrder()
 
-      setIsLoading(false)
-    }, 500) // Giả lập độ trễ 1.5 giây
-  }, [])
+  useEffect(() => {
+    fetchOrder()
+  }, [orderId])
   const handleDelete = async (order: Order) => {
     try {
       const res = await cancelOrderApi(order.id)

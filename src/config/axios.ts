@@ -36,7 +36,7 @@ instance.interceptors.request.use(
     return Promise.reject(error)
   }
 )
-let refreshTokenPromise: Promise<AxiosResponse> | null = null
+let refreshTokenPromise: Promise<BackendResponse<{ accessToken: string; refreshToken: string }>> | null = null
 // Add a response interceptor
 instance.interceptors.response.use(
   (response: AxiosResponse) => {
@@ -71,7 +71,10 @@ instance.interceptors.response.use(
             refreshTokenPromise = null
           })
       }
-      return refreshTokenPromise.then(() => {
+      return refreshTokenPromise.then((data) => {
+        const expiryDate = new Date()
+        expiryDate.setTime(expiryDate.getTime() + 7 * 24 * 60 * 60 * 1000)
+        document.cookie = `actk=${data.data.accessToken}; samesite=none; secure; path=/; expires=${expiryDate.toUTCString()}`
         return instance(originalRequest)
       })
     }
