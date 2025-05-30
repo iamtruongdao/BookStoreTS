@@ -42,7 +42,6 @@ const AuthorDetail = () => {
 
   const getAuthorById = async () => {
     dispatch(setLoading(true))
-    // await new Promise((resolve) => setTimeout(resolve, 2000))
     const res = await getAuthorByIdApi(id)
     if (res.code === 0) {
       await getBook(res.data.id)
@@ -51,7 +50,6 @@ const AuthorDetail = () => {
     }
   }
   const getBook = async (author: string) => {
-    await new Promise((resolve) => setTimeout(resolve, 2000))
     const res = await getBookByAuthorApi(author)
     if (res.code === 0) {
       setBook(res.data)

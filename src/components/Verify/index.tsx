@@ -60,7 +60,6 @@ const VerificationDialog: React.FC = () => {
     try {
       // Simulate API call with timeout
       const res = await verifyOtpApi({ email, otp })
-      await new Promise((resolve) => setTimeout(resolve, 1500))
       if (res.code === 0) {
         toast.success('Xác minh thành công!')
         setTimeout(() => {
