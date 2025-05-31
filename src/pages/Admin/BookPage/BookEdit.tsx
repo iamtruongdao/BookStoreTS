@@ -65,12 +65,28 @@ export default function BookEdit() {
     if (name === 'cat') {
       setBook({
         ...book,
-        cat: checked
-          ? [...book.cat, value] // Thêm giá trị nếu checked
-          : book.cat.filter((item) => item !== value)
+        cat: checked ? [...book.cat, value] : book.cat.filter((item) => item !== value)
       })
     } else {
-      setBook((prev) => ({ ...prev, [name]: value }))
+      // Convert dữ liệu theo đúng kiểu
+      let processedValue: string | number = value
+
+      switch (name) {
+        case 'productPrice':
+          processedValue = parseFloat(value) || 0
+          break
+        case 'productQuantity':
+        case 'pageNumber':
+          processedValue = parseInt(value) || 0
+          break
+        case 'discount':
+          processedValue = parseFloat(value) || 0
+          break
+        default:
+          processedValue = value
+      }
+
+      setBook((prev) => ({ ...prev, [name]: processedValue }))
     }
   }, 300)
   const handleDateChange = (newDate: any) => {
@@ -91,8 +107,6 @@ export default function BookEdit() {
     }
   }
   const handleSubmit = async () => {
-    console.log(book)
-
     try {
       setIsLoading(true)
       const res = location.state ? await updateBookApi(book) : await createBookApi(book)
