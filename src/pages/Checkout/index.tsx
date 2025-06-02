@@ -70,7 +70,7 @@ export default function CheckoutPage() {
     return data.map((item) => {
       return {
         productId: item.productId,
-        price: item.productDetails.productPrice - item.productDetails.discount,
+        price: item.productDetails.discountPrice,
         discount: item.productDetails.discount,
         quantity: item.quantity
       }
@@ -339,7 +339,6 @@ export default function CheckoutPage() {
     } else {
       // Handle COD order
       setLoading(true)
-
       try {
         const res = await createOrderApi({
           address: {
@@ -362,7 +361,7 @@ export default function CheckoutPage() {
         if (res.code === 0) {
           toast.success('Đặt hàng thành công!')
           setTimeout(() => {
-            navigate(`/order/${res.data.id}`)
+            window.location.href = `/order/${res.data.id}`
           }, 100)
         }
       } catch (error) {

@@ -46,6 +46,13 @@ const Home = () => {
       <BookSection title='Sách mới' books={newBooks} viewMoreLink='/book' />
       <BookSection title='Sắp xuất bản' books={waitPublishBook} viewMoreLink='/book' />
       <ArticleSection />
+      <script src='https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1'></script>
+      <df-messenger
+        intent='WELCOME'
+        chat-title='Welcome'
+        agent-id='f34b32e2-dcd4-4685-bfae-4914e90ed3f8'
+        language-code='en'
+      ></df-messenger>
     </>
   )
 }
